@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="btn_send">Wyślij</string>
+    <string name="txt_hint">Wiadomość...</string>
+    <string name="app_name">Kalambury</string>
+    <string name="choose_device_name">Wybierz nazwę gracza"</string>
+    <string name="ip_not_available">IP not available</string>
+
+</resources>
