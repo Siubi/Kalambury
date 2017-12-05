@@ -90,8 +90,14 @@ public class WiFiP2pServicesFragment extends Fragment implements
             return;
         }
 
-        localDeviceNameText.setText(deviceName);
-        ((MainActivity)getActivity()).setDeviceNameWithReflection(deviceName);
+        String formattedDeviceName = deviceName;
+        if (formattedDeviceName.length() > "[Phone] ".length() && formattedDeviceName.contains("[Phone] "))
+        {
+            formattedDeviceName = formattedDeviceName.substring("[Phone] ".length());
+        }
+
+        localDeviceNameText.setText(formattedDeviceName);
+        ((MainActivity)getActivity()).setDeviceNameWithReflection(formattedDeviceName);
         ((MainActivity)getActivity()).deviceName = localDeviceNameText.getText().toString();
     }
 
@@ -180,6 +186,13 @@ public class WiFiP2pServicesFragment extends Fragment implements
         mAdapter = new WiFiServicesAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        String formattedDeviceName = LocalP2PDevice.getInstance().getLocalDevice().deviceName;
+        if (formattedDeviceName.length() > "[Phone] ".length() && formattedDeviceName.contains("[Phone] "))
+        {
+            formattedDeviceName = formattedDeviceName.substring("[Phone] ".length());
+        }
+        LocalP2PDevice.getInstance().getLocalDevice().deviceName = formattedDeviceName;
 
         localDeviceNameText = (TextView) rootView.findViewById(R.id.localDeviceName);
         localDeviceNameText.setText(LocalP2PDevice.getInstance().getLocalDevice().deviceName);
