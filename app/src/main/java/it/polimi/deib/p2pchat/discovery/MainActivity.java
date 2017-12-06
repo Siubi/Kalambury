@@ -759,7 +759,7 @@ public class MainActivity extends ActionBarActivity implements
                                 CreateRanking();
                                 break;
                             case CHAT_MESSAGE:
-                                if (isGroupOwner)
+                                if (isGroupOwner){
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
                                     String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
                                     if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
