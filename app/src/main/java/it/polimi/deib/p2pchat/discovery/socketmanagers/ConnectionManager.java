@@ -113,5 +113,4 @@ public class ConnectionManager implements Runnable {
             Log.e(TAG, "Exception during write", e);
         }
     }
-
 }
