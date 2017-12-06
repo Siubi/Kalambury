@@ -100,6 +100,18 @@ public class GameFragment extends Fragment {
     int roundTime=45;
     TextView textTimer;
 
+    private String word;
+
+    public void setWord(String word){
+        this.word = word.toUpperCase();
+    }
+
+    boolean CheckWord(String answer){
+        if(this.word.equals(answer.toUpperCase()))
+            return true;
+        return false;
+    }
+
     /**
      * Callback interface to call methods reconnectToService in {@link it.polimi.deib.p2pchat.discovery.MainActivity}.
      * MainActivity implements this interface.
@@ -292,7 +304,7 @@ public class GameFragment extends Fragment {
             labelWord.setVisibility(View.GONE);
         }
         else {
-            labelWord.setText("Hasło: dupa");
+            labelWord.setText("Hasło: "+word);
         }
 
         ink = (InkView)view.findViewById(R.id.ink);
