@@ -5,9 +5,7 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * Created by Cybul on 29.11.2017.
- */
+
 
 public class BitmapToStringConverter  {
 

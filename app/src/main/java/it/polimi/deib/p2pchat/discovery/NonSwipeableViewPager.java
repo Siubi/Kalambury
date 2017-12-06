@@ -1,8 +1,6 @@
 package it.polimi.deib.p2pchat.discovery;
 
-/**
- * Created by Krzysiek on 2017-12-04.
- */
+
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -25,17 +23,17 @@ public class NonSwipeableViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
+
         return false;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
+
         return false;
     }
 
-    //down one is added for smooth scrolling
+
 
     private void setMyScroller() {
         try {
@@ -55,7 +53,7 @@ public class NonSwipeableViewPager extends ViewPager {
 
         @Override
         public void startScroll(int startX, int startY, int dx, int dy, int duration) {
-            super.startScroll(startX, startY, dx, dy, 350 /*1 secs*/);
+            super.startScroll(startX, startY, dx, dy, 350 );
         }
     }
 }

@@ -1,8 +1,6 @@
 package it.polimi.deib.p2pchat.discovery.chatmessages;
 
-/**
- * Created by Krzysiek on 2017-12-05.
- */
+
 
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -36,21 +34,7 @@ import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import lombok.Getter;
 import lombok.Setter;
 
-/*
- * Copyright (C) 2015-2016 Stefano Cappa
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -98,34 +82,21 @@ public class GameFragment extends Fragment {
     int roundTime=45;
     TextView textTimer;
 
-    /**
-     * Callback interface to call methods reconnectToService in {@link it.polimi.deib.p2pchat.discovery.MainActivity}.
-     * MainActivity implements this interface.
-     */
+    
     public interface AutomaticReconnectionListener {
         public void reconnectToService(WiFiP2pService wifiP2pService);
     }
 
-    /**
-     * Method to obtain a new Fragment's instance.
-     * @return This Fragment instance.
-     */
+    
     public static GameFragment newInstance() {
         return new GameFragment();
     }
 
-    /**
-     * Default Fragment constructor.
-     */
+    
     public GameFragment() {}
 
 
-    /**
-     * Method that combines all the messages inside the
-     * {@link it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue}
-     * in one String and pass this one to the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}
-     * to send the message to other devices.
-     */
+    
     public void sendForcedWaitingToSendQueue() {
 
         Log.d(TAG, "sendForcedWaitingToSendQueue() called");
@@ -152,40 +123,31 @@ public class GameFragment extends Fragment {
         }
     }
 
-    /**
-     * Method to add a message to the Fragment's listView and notifies this update to
-     * {@link it.polimi.deib.p2pchat.discovery.chatmessages.WiFiChatMessageListAdapter}.
-     * @param readMessage String that represents the message to add.
-     */
+    
     public void pushMessage(String readMessage) {
         items.add(readMessage);
         adapter.notifyDataSetChanged();
     }
 
-    /**
-     * Method that updates the {@link it.polimi.deib.p2pchat.discovery.chatmessages.WiFiChatMessageListAdapter}.
-     */
+    
     public void updateChatMessageListAdapter() {
         if(adapter!=null) {
             adapter.notifyDataSetChanged();
         }
     }
 
-    /**
-     * Method that add the text in the chatLine EditText to the WaitingToSendQueue and try to reconnect
-     * to the service associated to the device of this tab, with index tabNumber.
-     */
+    
     private void addToWaitingToSendQueueAndTryReconnect() {
-        //add message to the waiting to send queue
+        
         WaitingToSendQueue.getInstance().getWaitingToSendItemsList(tabNumber).add(chatLine.getText().toString());
 
-        //try to reconnect
+        
         WifiP2pDevice device = DestinationDeviceTabList.getInstance().getDevice(tabNumber - 1);
         if(device!=null) {
             WiFiP2pService service = ServiceList.getInstance().getServiceByDevice(device);
             Log.d(TAG, "device address: " + device.deviceAddress + ", service: " + service);
 
-            //call reconnectToService in MainActivity
+            
             ((AutomaticReconnectionListener) getActivity()).reconnectToService(service);
 
         } else {
@@ -199,12 +161,12 @@ public class GameFragment extends Fragment {
             if (!connectionManager.isDisable()) {
                 Log.d(TAG, "chatmanager state: enable");
 
-                //send message to the ChatManager's outputStream.
+                
                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                 {
                     ((MainActivity)getActivity()).users.get(i).write(message.getBytes());
                 }
-                //chatManager.write(chatLine.getText().toString().getBytes());
+                
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);
 
@@ -217,21 +179,21 @@ public class GameFragment extends Fragment {
 
     private void SetupGameChat(View view)
     {
-        //To prevent keyboard popup on start
+        
         (getActivity()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         (getActivity()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        //Send chat message on keyboard enter click
+        
         final EditText enterChatMessege = (EditText) view.findViewById(R.id.editText);
         enterChatMessege.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((actionId== EditorInfo.IME_ACTION_DONE )) {
 
-                    // hide virtual keyboard
+                    
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(enterChatMessege.getWindowToken(), 0);
 
                     String message = ((MainActivity)getActivity()).deviceName + ": " + enterChatMessege.getText().toString();
-                    //send message to all users (Client has only Host in 'users' table)
+                    
                     for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                     {
                         ((MainActivity)getActivity()).users.get(i).write(message.getBytes());
