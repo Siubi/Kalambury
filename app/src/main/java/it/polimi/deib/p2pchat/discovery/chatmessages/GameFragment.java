@@ -107,6 +107,8 @@ public class GameFragment extends Fragment {
     }
 
     public boolean CheckWord(String answer){
+        if(word==null)
+            return false;
         if(this.word.equals(answer.toUpperCase()))
             return true;
         return false;
