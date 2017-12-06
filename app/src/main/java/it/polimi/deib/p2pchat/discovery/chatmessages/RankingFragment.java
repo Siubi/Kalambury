@@ -20,6 +20,9 @@ import lombok.Setter;
 
 public class RankingFragment extends Fragment {
 
+    @Getter
+    @Setter
+    private Integer tabNumber;
     @Getter @Setter
     public static List<String> PlayersScore;
     private static final String TAG = "RankingFragment";
@@ -50,6 +53,10 @@ public class RankingFragment extends Fragment {
         _rankingTextView = (TextView)view.findViewById(R.id.textViewRanking);
         return view;
     }
+
+
+
+
 
 
 }
