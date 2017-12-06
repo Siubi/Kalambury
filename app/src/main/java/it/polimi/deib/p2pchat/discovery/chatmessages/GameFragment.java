@@ -65,6 +65,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.simplify.ink.InkView;
 
@@ -278,19 +279,22 @@ public class GameFragment extends Fragment {
 
     public void DrawImage(Bitmap bitmap)
     {
+        Toast.makeText(((MainActivity)getActivity()), "aa", Toast.LENGTH_SHORT).show();
         ink.clear();
         ink.drawBitmap(bitmap, 0, 0, null);
+        ink.refreshDrawableState();
+        Toast.makeText(((MainActivity)getActivity()), "ssss", Toast.LENGTH_SHORT).show();
     }
 
     private void SendImageEvery()
     {
         Thread thread = new Thread() {
             public void run() {
-                while (((MainActivity)getActivity()).isGroupOwner) {
+                while (true) {
                     try {
-
+                        Thread.sleep(1000);
                         SendImage();
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                     } catch (Exception v) {
                         System.out.println(v);
                     }
