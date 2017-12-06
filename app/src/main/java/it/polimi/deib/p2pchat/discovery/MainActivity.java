@@ -21,6 +21,7 @@ package it.polimi.deib.p2pchat.discovery;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -37,6 +38,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -49,6 +51,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import it.polimi.deib.p2pchat.R;
+import it.polimi.deib.p2pchat.discovery.BitmapConverters.StringToBitmapConverter;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsSdTxtRecordListener;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsServiceResponseListener;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomizableActionListener;
@@ -656,11 +659,6 @@ public class MainActivity extends ActionBarActivity implements
         this.setTabFragmentToPage(tabNum);
     }
 
-    /**
-     * Method called automatically by Android when
-     * {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}
-     * calls handler.obtainMessage(***).sendToTarget().
-     */
     @Override
     public boolean handleMessage(Message msg) {
         Log.d(TAG, "handleMessage, tabNum in this activity is: " + tabNum);
@@ -686,17 +684,7 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
-                DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
-                try {
-                    Gson gson = new GsonBuilder()
-                            .setLenient()
-                            .create();
-                    dC = gson.fromJson(readMessage, DataContainer.class);
-                } catch (Exception ex) {Log.d(TAG, "dupa"); }
-
                 Log.d(TAG, "Message: " + readMessage);
-
-                readMessage = dC.message;
 
                 //message filter usage
                 try {
@@ -757,26 +745,29 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
+
+                        DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
+                        try {
+                            Gson gson = new GsonBuilder()
+                                    .setLenient()
+                                    .create();
+                            dC = gson.fromJson(readMessage, DataContainer.class);
+                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
+
                         switch (dC.requestType){
                             case START_GAME:
                                 CreateGameRoom();
                                 CreateRanking();
                                 break;
                             case CHAT_MESSAGE:
-                                if (isGroupOwner){
+                                if (isGroupOwner)
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-                                    String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
-                                    if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
-                                        // dodaj ranking dla danego użytkownika, zmień osobę rysującą
-                                    }
-
-                                }
-                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
+                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
 
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        gFragment.AddMessageToChat(readMessage);
+                                        gFragment.AddMessageToChat(dC.message);
                                     }
                                 }
                                 break;
@@ -784,6 +775,20 @@ public class MainActivity extends ActionBarActivity implements
                                 break;
                             case UNDEFINED:
                                 break;
+                            case REFRESH_IMAGE:
+                                if (gameRoomExists) {
+                                    final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
+                                    if (gFragment != null) {
+                                        final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
+                                        gFragment.DrawImage(bitmap);
+
+                                        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                        ft.detach(gFragment);
+                                        ft.attach(gFragment);
+                                        ft.commit();
+                                    }
+                                }
+
                             default:
                                 break;
                         }
