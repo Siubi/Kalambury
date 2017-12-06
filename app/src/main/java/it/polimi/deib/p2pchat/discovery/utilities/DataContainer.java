@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -21,6 +22,8 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 public class DataContainer {
     public String playerName;
     public String message;
+    public byte[] image;
+    public ArrayList<Player> playerList;
     public Enums.RequestTypes requestType;
 
     /**
@@ -46,6 +49,22 @@ public class DataContainer {
         this.requestType = requestType;
         this.playerName = playerName;
         this.message = message;
+    }
+
+    public DataContainer(String playerName, String message, ArrayList<Player> players, Enums.RequestTypes requestType)
+    {
+        this.requestType = requestType;
+        this.playerName = playerName;
+        this.message = message;
+        this.playerList = players;
+    }
+
+    public DataContainer(String playerName, String message, byte[] image, Enums.RequestTypes requestType)
+    {
+        this.requestType = requestType;
+        this.playerName = playerName;
+        this.message = message;
+        this.image = image;
     }
 
     @Override

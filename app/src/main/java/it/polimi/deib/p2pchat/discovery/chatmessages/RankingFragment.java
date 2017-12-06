@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polimi.deib.p2pchat.R;
+import it.polimi.deib.p2pchat.discovery.utilities.Player;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +25,10 @@ public class RankingFragment extends Fragment {
     @Setter
     private Integer tabNumber;
     @Getter @Setter
-    public static List<String> PlayersScore;
+    public static List<Player> PlayersScore;
     private static final String TAG = "RankingFragment";
     private static TextView _rankingTextView;
+
     public static RankingFragment newInstance() {
         return new RankingFragment();
     }
