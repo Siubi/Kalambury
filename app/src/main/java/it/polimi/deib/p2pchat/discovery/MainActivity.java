@@ -72,6 +72,7 @@ import it.polimi.deib.p2pchat.discovery.services.WiFiServicesAdapter;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ClientSocketHandler;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.GroupOwnerSocketHandler;
+import it.polimi.deib.p2pchat.discovery.utilities.Player;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -119,6 +120,28 @@ public class MainActivity extends ActionBarActivity implements
     public boolean isGroupOwner = false;
     public ArrayList<ConnectionManager> users = new ArrayList<>();
     public boolean gameRoomExists = false;
+    public ArrayList<Player> playerList = new ArrayList<>();
+
+
+    public void AddPlayerToList(Player player)
+    {
+        for (int i = 0; i < playerList.size(); i++)
+        {
+            if (player.playerName.contains(playerList.get(i).playerName))
+                return;
+        }
+
+        playerList.add(player);
+    }
+
+    public void AddPointsForPlayer(String playerName, int points)
+    {
+        for (int i = 0; i < playerList.size(); i++)
+        {
+            if (playerList.get(i).playerName.contains(playerName))
+                playerList.get(i).points += points;
+        }
+    }
 
     /**
      * Method to get the {@link android.os.Handler}.
@@ -470,13 +493,6 @@ public class MainActivity extends ActionBarActivity implements
         this.connectP2p(service);
     }
 
-    /**
-     * Method to send the {@link it.polimi.deib.p2pchat.discovery.Configuration}.MAGICADDRESSKEYWORD with the macaddress
-     * of this device to the other device.
-     *
-     * @param deviceMacAddress String that represents the macaddress of the destination device.
-     * @param name             String that represents the name of the destination device.
-     */
     private void sendAddress(String deviceMacAddress, String name, ConnectionManager connectionManager) {
         if (connectionManager != null) {
             InetAddress ipAddress;
@@ -709,6 +725,8 @@ public class MainActivity extends ActionBarActivity implements
                                 + p2pDevice.deviceAddress + ", " + device.getDestinationIpAddress());
                         manageAddressMessageReception(device);
                     }
+
+                    playerList.add(new Player(p2pDevice.deviceName, 0));
                 }
 
 

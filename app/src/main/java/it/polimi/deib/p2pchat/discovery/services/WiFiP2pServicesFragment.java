@@ -32,6 +32,7 @@ import it.polimi.deib.p2pchat.discovery.model.LocalP2PDevice;
 
 import it.polimi.deib.p2pchat.discovery.MainActivity;
 import it.polimi.deib.p2pchat.discovery.services.localdeviceguielement.LocalDeviceDialogFragment;
+import it.polimi.deib.p2pchat.discovery.utilities.Player;
 import lombok.Getter;
 
 /**
@@ -99,6 +100,7 @@ public class WiFiP2pServicesFragment extends Fragment implements
         localDeviceNameText.setText(formattedDeviceName);
         ((MainActivity)getActivity()).setDeviceNameWithReflection(formattedDeviceName);
         ((MainActivity)getActivity()).deviceName = localDeviceNameText.getText().toString();
+        ((MainActivity)getActivity()).playerList.add(new Player(localDeviceNameText.getText().toString(), 0));
     }
 
     /**
@@ -197,6 +199,7 @@ public class WiFiP2pServicesFragment extends Fragment implements
         localDeviceNameText = (TextView) rootView.findViewById(R.id.localDeviceName);
         localDeviceNameText.setText(LocalP2PDevice.getInstance().getLocalDevice().deviceName);
         ((MainActivity)getActivity()).deviceName = localDeviceNameText.getText().toString();
+        ((MainActivity)getActivity()).playerList.add(new Player(localDeviceNameText.getText().toString(), 0));
 
         TextView localDeviceAddressText = (TextView) rootView.findViewById(R.id.localDeviceAddress);
         localDeviceAddressText.setText(LocalP2PDevice.getInstance().getLocalDevice().deviceAddress);
