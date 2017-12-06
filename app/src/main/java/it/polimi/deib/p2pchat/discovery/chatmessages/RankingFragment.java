@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ import it.polimi.deib.p2pchat.discovery.MainActivity;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
-import it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager;
+import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,29 +41,6 @@ import lombok.Setter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import it.polimi.deib.p2pchat.R;
-import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
-import it.polimi.deib.p2pchat.discovery.MainActivity;
-import it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager;
-import it.polimi.deib.p2pchat.discovery.services.ServiceList;
-import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
-import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
-import lombok.Getter;
-import lombok.Setter;
 
 public class RankingFragment extends Fragment {
 
@@ -80,7 +55,7 @@ public class RankingFragment extends Fragment {
 
     private TextView chatLine;
 
-    @Getter @Setter private ChatManager chatManager;
+    @Getter @Setter private ConnectionManager connectionManager;
     private WiFiChatMessageListAdapter adapter = null;
 
     /**
@@ -126,9 +101,9 @@ public class RankingFragment extends Fragment {
 
         Log.d(TAG, "Queued message to send: " + combineMessages);
 
-        if (chatManager != null) {
-            if (!chatManager.isDisable()) {
-                chatManager.write((combineMessages).getBytes());
+        if (connectionManager != null) {
+            if (!connectionManager.isDisable()) {
+                connectionManager.write((combineMessages).getBytes());
                 WaitingToSendQueue.getInstance().getWaitingToSendItemsList(tabNumber).clear();
             } else {
                 Log.d(TAG, "Chatmanager disabled, impossible to send the queued combined message");
@@ -181,8 +156,8 @@ public class RankingFragment extends Fragment {
 
     public void reSendCustomMessage(String message)
     {
-        if (chatManager != null) {
-            if (!chatManager.isDisable()) {
+        if (connectionManager != null) {
+            if (!connectionManager.isDisable()) {
                 Log.d(TAG, "chatmanager state: enable");
 
                 //send message to the ChatManager's outputStream.
@@ -190,7 +165,7 @@ public class RankingFragment extends Fragment {
                 {
                     ((MainActivity)getActivity()).users.get(i).write(message.getBytes());
                 }
-                //chatManager.write(chatLine.getText().toString().getBytes());
+                //connectionManager.write(chatLine.getText().toString().getBytes());
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);
 

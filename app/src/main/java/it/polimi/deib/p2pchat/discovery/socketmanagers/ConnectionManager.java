@@ -39,7 +39,7 @@ import lombok.Setter;
  * Created by Stefano Cappa on 04/02/15, based on google code samples.
  *
  */
-public class ChatManager implements Runnable {
+public class ConnectionManager implements Runnable {
 
     private static final String TAG = "ChatHandler";
 
@@ -54,13 +54,13 @@ public class ChatManager implements Runnable {
      * @param socket Represents the {@link java.net.Socket} required in order to communicate
      * @param handler Represents the Handler required in order to communicate
      */
-    public ChatManager(@NonNull Socket socket, @NonNull Handler handler) {
+    public ConnectionManager(@NonNull Socket socket, @NonNull Handler handler) {
         this.socket = socket;
         this.handler = handler;
     }
 
     /**
-     * Method to execute the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}'s Thread
+     * Method to execute the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager}'s Thread
      * To stop the execution, please use ".setDisable(true);".
      */
     @Override

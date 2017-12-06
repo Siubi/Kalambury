@@ -37,18 +37,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.astuetz.PagerSlidingTabStrip;
 
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsSdTxtRecordListener;
@@ -74,7 +69,7 @@ import java.util.Map;
 
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
 import it.polimi.deib.p2pchat.discovery.services.WiFiServicesAdapter;
-import it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager;
+import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ClientSocketHandler;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.GroupOwnerSocketHandler;
 import lombok.Getter;
@@ -118,11 +113,11 @@ public class MainActivity extends ActionBarActivity implements
     private Thread socketHandler;
     private final Handler handler = new Handler(this);
 
-    private ChatManager chatManager;
+    private ConnectionManager connectionManager;
 
     public String deviceName = "";
     public boolean isGroupOwner = false;
-    public ArrayList<ChatManager> users = new ArrayList<>();
+    public ArrayList<ConnectionManager> users = new ArrayList<>();
     public boolean gameRoomExists = false;
 
     /**
@@ -482,36 +477,36 @@ public class MainActivity extends ActionBarActivity implements
      * @param deviceMacAddress String that represents the macaddress of the destination device.
      * @param name             String that represents the name of the destination device.
      */
-    private void sendAddress(String deviceMacAddress, String name, ChatManager chatManager) {
-        if (chatManager != null) {
+    private void sendAddress(String deviceMacAddress, String name, ConnectionManager connectionManager) {
+        if (connectionManager != null) {
             InetAddress ipAddress;
             if (socketHandler instanceof GroupOwnerSocketHandler) {
                 ipAddress = ((GroupOwnerSocketHandler) socketHandler).getIpAddress();
 
                 Log.d(TAG, "sending message with MAGICADDRESSKEYWORD, with ipaddress= " + ipAddress.getHostAddress());
 
-                chatManager.write((Configuration.PLUSSYMBOLS + Configuration.MAGICADDRESSKEYWORD +
+                connectionManager.write((Configuration.PLUSSYMBOLS + Configuration.MAGICADDRESSKEYWORD +
                         "___" + deviceMacAddress + "___" + name + "___" + ipAddress.getHostAddress()).getBytes());
             } else {
                 Log.d(TAG, "sending message with MAGICADDRESSKEYWORD, without ipaddress");
                 //i use "+" symbols as initial spacing to be sure that also if some initial character will be lost i'll have always
                 //the Configuration.MAGICADDRESSKEYWORD and i can set the associated device to the correct WifiChatFragment.
-                chatManager.write((Configuration.PLUSSYMBOLS + Configuration.MAGICADDRESSKEYWORD +
+                connectionManager.write((Configuration.PLUSSYMBOLS + Configuration.MAGICADDRESSKEYWORD +
                         "___" + deviceMacAddress + "___" + name).getBytes());
             }
         }
     }
 
     /**
-     * Method to disable all {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}'s.
+     * Method to disable all {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager}'s.
      * This method iterates over all ChatManagers inside
      * the {@link it.polimi.deib.p2pchat.discovery.chatmessages.WiFiChatFragment}'s list
      * (in {@link it.polimi.deib.p2pchat.discovery.TabFragment} ) and calls "setDisable(true);".
      */
     public void setDisableAllChatManagers() {
         for (Fragment chatFragment : TabFragment.getWiFiChatFragmentList()) {
-            if (chatFragment != null && ((WiFiChatFragment)chatFragment).getChatManager() != null) {
-                ((WiFiChatFragment)chatFragment).getChatManager().setDisable(true);
+            if (chatFragment != null && ((WiFiChatFragment)chatFragment).getConnectionManager() != null) {
+                ((WiFiChatFragment)chatFragment).getConnectionManager().setDisable(true);
             }
         }
     }
@@ -656,10 +651,10 @@ public class MainActivity extends ActionBarActivity implements
 
                 Log.d(TAG, "handleMessage, " + Configuration.FIRSTMESSAGEXCHANGE_MSG + " case");
 
-                chatManager = (ChatManager) obj;
+                connectionManager = (ConnectionManager) obj;
                 sendAddress(LocalP2PDevice.getInstance().getLocalDevice().deviceAddress,
                         LocalP2PDevice.getInstance().getLocalDevice().deviceName,
-                        chatManager);
+                        connectionManager);
 
                 break;
             case Configuration.MESSAGE_READ:
@@ -855,10 +850,10 @@ public class MainActivity extends ActionBarActivity implements
 
         Log.d(TAG, "handleMessage, updated tabNum = " + tabNum);
 
-        Log.d(TAG, "handleMessage, chatManager!=null? " + (chatManager != null));
+        Log.d(TAG, "handleMessage, connectionManager!=null? " + (connectionManager != null));
 
-        //if chatManager != null i'm receiving the message with MAGICADDRESSKEYWORD from another device
-        if (chatManager != null) {
+        //if connectionManager != null i'm receiving the message with MAGICADDRESSKEYWORD from another device
+        if (connectionManager != null) {
 
             if (tabNum <= 1) {
                 //add a new tab, only if necessary.
@@ -888,11 +883,11 @@ public class MainActivity extends ActionBarActivity implements
             //i set chatmanager, because if i am in Configuration.FIRSTMESSAGEXCHANGE's case is
             //when two devices starting to connect each other for the first time
             //or after a disconnect event and GroupInfo is available.
-            ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).setChatManager(chatManager);
-            users.add(chatManager);
+            ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).setConnectionManager(connectionManager);
+            users.add(connectionManager);
 
             //because i don't want to re-execute the code inside this if, every received message.
-            chatManager = null;
+            connectionManager = null;
 
             //if (tabNum > 1) {
             //    Fragment fragment = tabFragment.getChatFragmentByTab(tabNum - 1);

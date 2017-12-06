@@ -32,7 +32,7 @@ import it.polimi.deib.p2pchat.discovery.MainActivity;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
-import it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager;
+import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -68,7 +68,7 @@ import java.util.List;
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
 import it.polimi.deib.p2pchat.discovery.MainActivity;
-import it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager;
+import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
@@ -88,7 +88,7 @@ public class GameFragment extends Fragment {
 
     private TextView chatLine;
 
-    @Getter @Setter private ChatManager chatManager;
+    @Getter @Setter private ConnectionManager connectionManager;
     private WiFiChatMessageListAdapter adapter = null;
 
     public TextView chat;
@@ -138,9 +138,9 @@ public class GameFragment extends Fragment {
 
         Log.d(TAG, "Queued message to send: " + combineMessages);
 
-        if (chatManager != null) {
-            if (!chatManager.isDisable()) {
-                chatManager.write((combineMessages).getBytes());
+        if (connectionManager != null) {
+            if (!connectionManager.isDisable()) {
+                connectionManager.write((combineMessages).getBytes());
                 WaitingToSendQueue.getInstance().getWaitingToSendItemsList(tabNumber).clear();
             } else {
                 Log.d(TAG, "Chatmanager disabled, impossible to send the queued combined message");
@@ -192,8 +192,8 @@ public class GameFragment extends Fragment {
 
     public void reSendCustomMessage(String message)
     {
-        if (chatManager != null) {
-            if (!chatManager.isDisable()) {
+        if (connectionManager != null) {
+            if (!connectionManager.isDisable()) {
                 Log.d(TAG, "chatmanager state: enable");
 
                 //send message to the ChatManager's outputStream.
