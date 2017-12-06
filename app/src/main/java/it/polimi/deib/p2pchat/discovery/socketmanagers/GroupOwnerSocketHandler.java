@@ -99,7 +99,7 @@ public class GroupOwnerSocketHandler extends Thread {
                 // there is a new connection
                 if(socket!=null && !socket.isClosed()) {
                     Socket clientSocket = socket.accept(); //because now i'm connected with the client/peer device
-                    pool.execute(new ChatManager(clientSocket, handler));
+                    pool.execute(new ConnectionManager(clientSocket, handler));
                     ipAddress = clientSocket.getInetAddress();
                     Log.d(TAG, "Launching the I/O handler");
                 }

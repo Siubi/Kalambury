@@ -57,14 +57,14 @@ public class ClientSocketHandler extends Thread {
      */
     @Override
     public void run() {
-        ChatManager chat;
+        ConnectionManager chat;
         socket = new Socket();
         try {
             socket.bind(null);
             socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
                     Configuration.GROUPOWNER_PORT), Configuration.CLIENT_PORT);
             Log.d(TAG, "Launching the I/O handler");
-            chat = new ChatManager(socket, handler);
+            chat = new ConnectionManager(socket, handler);
             new Thread(chat).start();
         } catch (IOException e) {
             Log.e(TAG,"IOException throwed by socket", e);
