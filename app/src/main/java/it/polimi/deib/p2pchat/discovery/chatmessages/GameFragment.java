@@ -33,6 +33,8 @@ import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSend
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
+import it.polimi.deib.p2pchat.discovery.utilities.DataContainer;
+import it.polimi.deib.p2pchat.discovery.utilities.Enums;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -243,10 +245,12 @@ public class GameFragment extends Fragment {
                     imm.hideSoftInputFromWindow(enterChatMessege.getWindowToken(), 0);
 
                     String message = ((MainActivity)getActivity()).deviceName + ": " + enterChatMessege.getText().toString();
+                    String deviceName = ((MainActivity)getActivity()).deviceName;
                     //send message to all users (Client has only Host in 'users' table)
                     for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                     {
-                        ((MainActivity)getActivity()).users.get(i).write(message.getBytes());
+                        DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.CHAT_MESSAGE);
+                        ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                     }
 
                     if (((MainActivity)getActivity()).isGroupOwner) {

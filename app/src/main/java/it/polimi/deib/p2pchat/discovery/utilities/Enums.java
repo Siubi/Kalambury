@@ -16,8 +16,10 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  */
 public class Enums {
     public enum RequestTypes {
-        FIRST_TYPE,
-        SECOND_TYPE
+        START_GAME,
+        REFRESH_IMAGE,
+        UPDATE_PLAYERS_POINTS,
+        CHAT_MESSAGE
     }
 }
 

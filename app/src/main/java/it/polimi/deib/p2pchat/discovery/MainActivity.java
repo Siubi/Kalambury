@@ -45,6 +45,9 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsSdTxtRecordListener;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsServiceResponseListener;
@@ -72,6 +75,8 @@ import it.polimi.deib.p2pchat.discovery.services.WiFiServicesAdapter;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ClientSocketHandler;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.GroupOwnerSocketHandler;
+import it.polimi.deib.p2pchat.discovery.utilities.DataContainer;
+import it.polimi.deib.p2pchat.discovery.utilities.Enums;
 import it.polimi.deib.p2pchat.discovery.utilities.Player;
 import lombok.Getter;
 import lombok.Setter;
@@ -681,6 +686,12 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
+                Gson gson = new GsonBuilder()
+                        .setLenient()
+                        .create();
+                DataContainer dC = gson.fromJson(readMessage, DataContainer.class);
+
+
                 Log.d(TAG, "Message: " + readMessage);
 
                 //message filter usage
@@ -742,23 +753,25 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
+                        switch (dC.requestType){
+                            case START_GAME:
+                                CreateGameRoom();
+                                CreateRanking();
+                                break;
+                            case CHAT_MESSAGE:
+                                if (isGroupOwner)
+                                    ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
+                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
 
-                        if (readMessage.contains("startGame") && readMessage.length() == "startGame".length())
-                        {
-                            CreateGameRoom();
-                            CreateRanking();
-                        }
-                        else {
-                            if (isGroupOwner)
-                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-                            ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
-
-                            if (gameRoomExists) {
-                                GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
-                                if (gFragment != null) {
-                                    gFragment.AddMessageToChat(readMessage);
+                                if (gameRoomExists) {
+                                    GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
+                                    if (gFragment != null) {
+                                        gFragment.AddMessageToChat(readMessage);
+                                    }
                                 }
-                            }
+                                break;
+                            case UPDATE_PLAYERS_POINTS:
+                                break;
                         }
                     } else {
                         if (!readMessage.contains(Configuration.MAGICADDRESSKEYWORD)) {

@@ -36,6 +36,8 @@ import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
+import it.polimi.deib.p2pchat.discovery.utilities.DataContainer;
+import it.polimi.deib.p2pchat.discovery.utilities.Enums;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -196,7 +198,8 @@ public class WiFiChatFragment extends Fragment {
                                 //send message to all users
                                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                 {
-                                    ((MainActivity)getActivity()).users.get(i).write(("startGame").getBytes());
+                                    DataContainer dC = new DataContainer(Enums.RequestTypes.START_GAME);
+                                    ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                                 }
                                 ((MainActivity)getActivity()).CreateGameRoom();
                                 ((MainActivity)getActivity()).CreateRanking();
