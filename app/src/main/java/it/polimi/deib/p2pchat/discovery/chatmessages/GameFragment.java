@@ -62,6 +62,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.simplify.ink.InkView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +87,7 @@ public class GameFragment extends Fragment {
     @Getter @Setter private static boolean firstStartSendAddress;
     @Getter @Setter private boolean grayScale = true;
     @Getter private final List<String> items = new ArrayList<>();
+    private InkView ink;
 
     private TextView chatLine;
 
@@ -287,6 +290,11 @@ public class GameFragment extends Fragment {
         else {
             labelWord.setText("Hasło: dupa");
         }
+
+        ink = (InkView)view.findViewById(R.id.ink);
+        ink.setColor(getResources().getColor(android.R.color.black));
+        ink.setMinStrokeWidth(1.5f);
+        ink.setMaxStrokeWidth(6f);
 
         SetupGameChat(view);
 
