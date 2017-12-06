@@ -766,7 +766,7 @@ public class MainActivity extends ActionBarActivity implements
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
 
                                     String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
-                                    if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
+                                    if(gameRoomExists && ((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
                                         // dodaj ranking dla danego użytkownika, zmień osobę rysującą
                                     }
 
@@ -783,6 +783,8 @@ public class MainActivity extends ActionBarActivity implements
                             case UPDATE_PLAYERS_POINTS:
                                 break;
                             case UNDEFINED:
+                                break;
+                            default:
                                 break;
                         }
                     } else {
