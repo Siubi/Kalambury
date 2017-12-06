@@ -470,13 +470,6 @@ public class MainActivity extends ActionBarActivity implements
         this.connectP2p(service);
     }
 
-    /**
-     * Method to send the {@link it.polimi.deib.p2pchat.discovery.Configuration}.MAGICADDRESSKEYWORD with the macaddress
-     * of this device to the other device.
-     *
-     * @param deviceMacAddress String that represents the macaddress of the destination device.
-     * @param name             String that represents the name of the destination device.
-     */
     private void sendAddress(String deviceMacAddress, String name, ConnectionManager connectionManager) {
         if (connectionManager != null) {
             InetAddress ipAddress;

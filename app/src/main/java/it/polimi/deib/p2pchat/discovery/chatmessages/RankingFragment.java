@@ -20,6 +20,9 @@ import lombok.Setter;
 
 public class RankingFragment extends Fragment {
 
+    @Getter
+    @Setter
+    private Integer tabNumber;
     @Getter @Setter
     public static List<String> PlayersScore;
     private static final String TAG = "RankingFragment";
