@@ -2,6 +2,8 @@ package it.polimi.deib.p2pchat.discovery.utilities;
 
 import android.content.Context;
 
+import com.google.gson.GsonBuilder;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -18,19 +20,42 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  */
 public class DataContainer {
     public String playerName;
+    public String message;
     public Enums.RequestTypes requestType;
 
-
-    public DataContainer(Context c, Enums.RequestTypes requestType)
+    /**
+     * Constructor.
+     *
+     * @param requestType (required) Type of container.
+     */
+    public DataContainer(Enums.RequestTypes requestType)
     {
         this.requestType = requestType;
 
     }
 
-    public DataContainer(Context c, Enums.RequestTypes requestType, String playerName)
+    /**
+     * Constructor 2.
+     *
+     * @param playerName (required) Player name
+     * @param message (required) TMessage
+     * @param requestType (required) Type of container.
+     */
+    public DataContainer(String playerName, String message, Enums.RequestTypes requestType)
     {
         this.requestType = requestType;
         this.playerName = playerName;
+        this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return new GsonBuilder().create().toJson(this, DataContainer.class);
+    }
+
+    public byte[] toByteArray(){
+        return (this.toString()).getBytes();
+    }
+
 
 }
