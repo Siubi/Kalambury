@@ -686,13 +686,6 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
-                try {
-                    Gson gson = new GsonBuilder()
-                            .setLenient()
-                            .create();
-                    DataContainer dC = gson.fromJson(readMessage, DataContainer.class);
-                } catch (Exception ex) {Log.d(TAG, "dupa"); }
-
                 Log.d(TAG, "Message: " + readMessage);
 
                 //message filter usage
@@ -754,6 +747,15 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
+
+                        DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
+                        try {
+                            Gson gson = new GsonBuilder()
+                                    .setLenient()
+                                    .create();
+                            dC = gson.fromJson(readMessage, DataContainer.class);
+                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
+
                         switch (dC.requestType){
                             case START_GAME:
                                 CreateGameRoom();

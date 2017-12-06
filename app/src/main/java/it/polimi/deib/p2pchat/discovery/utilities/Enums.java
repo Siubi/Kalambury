@@ -19,7 +19,8 @@ public class Enums {
         START_GAME,
         REFRESH_IMAGE,
         UPDATE_PLAYERS_POINTS,
-        CHAT_MESSAGE
+        CHAT_MESSAGE,
+        UNDEFINED
     }
 }
 
