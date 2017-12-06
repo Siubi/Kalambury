@@ -686,7 +686,17 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
+                DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
+                try {
+                    Gson gson = new GsonBuilder()
+                            .setLenient()
+                            .create();
+                    dC = gson.fromJson(readMessage, DataContainer.class);
+                } catch (Exception ex) {Log.d(TAG, "dupa"); }
+
                 Log.d(TAG, "Message: " + readMessage);
+
+                readMessage = dC.message;
 
                 //message filter usage
                 try {
@@ -748,14 +758,6 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
 
-                        DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
-                        try {
-                            Gson gson = new GsonBuilder()
-                                    .setLenient()
-                                    .create();
-                            dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
-
                         switch (dC.requestType){
                             case START_GAME:
                                 CreateGameRoom();
@@ -776,6 +778,8 @@ public class MainActivity extends ActionBarActivity implements
                             case UPDATE_PLAYERS_POINTS:
                                 break;
                             case UNDEFINED:
+                                break;
+                            default:
                                 break;
                         }
                     } else {
