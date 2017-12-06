@@ -225,12 +225,10 @@ public class WiFiChatFragment extends Fragment {
                             String messageToSend = ((MainActivity)getActivity()).deviceName + ": " + chatLine.getText().toString();
 
                             if (!connectionManager.isDisable()) {
-                                Log.d(TAG, "chatmanager state: enable");
 
-                                String deviceName = ((MainActivity)getActivity()).deviceName;
                                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                 {
-                                    DataContainer dC = new DataContainer(deviceName, messageToSend, Enums.RequestTypes.CHAT_MESSAGE);
+                                    DataContainer dC = new DataContainer(((MainActivity)getActivity()).deviceName, messageToSend, Enums.RequestTypes.CHAT_MESSAGE);
                                     ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                                 }
                                 //connectionManager.write(chatLine.getText().toString().getBytes());

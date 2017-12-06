@@ -51,6 +51,10 @@ public class DataContainer {
         this.message = message;
     }
 
+    public DataContainer(ArrayList<Player> players, Enums.RequestTypes requestType){
+        this.requestType = requestType;
+        this.playerList = players;
+    }
     public DataContainer(String playerName, String message, ArrayList<Player> players, Enums.RequestTypes requestType)
     {
         this.requestType = requestType;

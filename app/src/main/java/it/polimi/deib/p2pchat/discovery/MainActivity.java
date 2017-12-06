@@ -756,11 +756,13 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
                         switch (dC.requestType){
-                            case  :
-                                RankingPointsManager = new RankingPointsManager(playerList);
+                            case  START_GAME:
+
                                 if(isGroupOwner){
+                                    RankingPointsManager = new RankingPointsManager(playerList);
                                     CurrentPlayerName = GetStartingPlayer();
                                 }
+
                                 CreateGameRoom();
                                 CreateRanking();
                                 break;
@@ -770,6 +772,18 @@ public class MainActivity extends ActionBarActivity implements
                                     String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
                                     if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
                                         // dodaj ranking dla danego użytkownika, zmień osobę rysującą
+                                        RankingPointsManager.AddPointsToPlayer(CurrentPlayerName);
+                                        RankingPointsManager.AddPointsToPlayer(dC.playerName);
+                                        if (!connectionManager.isDisable()) {
+                                            Log.d(TAG, "chatmanager state: enable");
+
+                                            for (int i = 0; i < users.size(); i++)
+                                            {
+                                                DataContainer ndc = new DataContainer(RankingPointsManager.GetPlayers(), Enums.RequestTypes.UPDATE_PLAYERS_POINTS);
+                                                users.get(i).write(ndc.toByteArray());
+                                            }
+                                            //connectionManager.write(chatLine.getText().toString().getBytes());
+                                        }
                                     }
 
                                 }
@@ -783,8 +797,8 @@ public class MainActivity extends ActionBarActivity implements
                                 }
                                 break;
                             case UPDATE_PLAYERS_POINTS:
-                                RankingFragment.PlayersScore = RankingPointsManager.GetPlayers();
-                                ((RankingFragment) tabFragment.getChatFragmentByTab(4)).Refresh();
+                                RankingFragment.PlayersScore = dC.playerList;
+                                ((RankingFragment) tabFragment.getChatFragmentByTab(3)).Refresh();
                                 break;
                             case UNDEFINED:
                                 break;

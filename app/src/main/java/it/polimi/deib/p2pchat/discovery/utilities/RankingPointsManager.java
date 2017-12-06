@@ -11,9 +11,9 @@ import lombok.Getter;
 public class RankingPointsManager {
 
 
-    private List<Player> players = new ArrayList<>();
+    private ArrayList<Player> players = new ArrayList<>();
 
-    public RankingPointsManager(List<Player> players) {
+    public RankingPointsManager(ArrayList<Player> players) {
         this.players = players;
     }
 
@@ -32,7 +32,7 @@ public class RankingPointsManager {
             }
     }
 
-    public List<Player> GetPlayers(){
+    public ArrayList<Player> GetPlayers(){
         return players;
     }
 }
