@@ -775,6 +775,8 @@ public class MainActivity extends ActionBarActivity implements
                                 break;
                             case UPDATE_PLAYERS_POINTS:
                                 break;
+                            case UNDEFINED:
+                                break;
                         }
                     } else {
                         if (!readMessage.contains(Configuration.MAGICADDRESSKEYWORD)) {
