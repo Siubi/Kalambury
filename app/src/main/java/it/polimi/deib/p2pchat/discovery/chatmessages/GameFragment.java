@@ -5,6 +5,7 @@ package it.polimi.deib.p2pchat.discovery.chatmessages;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.deib.p2pchat.R;
+import it.polimi.deib.p2pchat.discovery.BitmapConverters.BitmapToStringConverter;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
 import it.polimi.deib.p2pchat.discovery.MainActivity;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
@@ -134,12 +136,6 @@ public class GameFragment extends Fragment {
     public GameFragment() {}
 
 
-    /**
-     * Method that combines all the messages inside the
-     * {@link it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue}
-     * in one String and pass this one to the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}
-     * to send the message to other devices.
-     */
     public void sendForcedWaitingToSendQueue() {
 
         Log.d(TAG, "sendForcedWaitingToSendQueue() called");
@@ -266,7 +262,43 @@ public class GameFragment extends Fragment {
             }
         });
         chat = (TextView) view.findViewById(R.id.chat);
-        chat.setMovementMethod(new ScrollingMovementMethod());}
+        chat.setMovementMethod(new ScrollingMovementMethod());
+    }
+
+    private void SendImage()
+    {
+        String message = BitmapToStringConverter.Convert(ink.getBitmap());
+        String deviceName = ((MainActivity)getActivity()).deviceName;
+        for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+        {
+            DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
+            ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+        }
+    }
+
+    public void DrawImage(Bitmap bitmap)
+    {
+        ink.clear();
+        ink.drawBitmap(bitmap, 0, 0, null);
+    }
+
+    private void SendImageEvery()
+    {
+        Thread thread = new Thread() {
+            public void run() {
+                while (((MainActivity)getActivity()).isGroupOwner) {
+                    try {
+
+                        SendImage();
+                        Thread.sleep(2000);
+                    } catch (Exception v) {
+                        System.out.println(v);
+                    }
+                }
+            }
+        };
+        thread.start();
+    }
 
     public void AddMessageToChat(String message)
     {
@@ -311,6 +343,9 @@ public class GameFragment extends Fragment {
         ink.setColor(getResources().getColor(android.R.color.black));
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
+
+        if (((MainActivity)getActivity()).isGroupOwner)
+            SendImageEvery();
 
         SetupGameChat(view);
 
