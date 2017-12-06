@@ -684,7 +684,17 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
+                DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
+                try {
+                    Gson gson = new GsonBuilder()
+                            .setLenient()
+                            .create();
+                    dC = gson.fromJson(readMessage, DataContainer.class);
+                } catch (Exception ex) {Log.d(TAG, "dupa"); }
+
                 Log.d(TAG, "Message: " + readMessage);
+
+                readMessage = dC.message;
 
                 //message filter usage
                 try {
@@ -745,15 +755,6 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
-
-                        DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
-                        try {
-                            Gson gson = new GsonBuilder()
-                                    .setLenient()
-                                    .create();
-                            dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
-
                         switch (dC.requestType){
                             case  :
                                 RankingPointsManager = new RankingPointsManager(playerList);
@@ -764,8 +765,14 @@ public class MainActivity extends ActionBarActivity implements
                                 CreateRanking();
                                 break;
                             case CHAT_MESSAGE:
-                                if (isGroupOwner)
+                                if (isGroupOwner){
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
+                                    String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
+                                    if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
+                                        // dodaj ranking dla danego użytkownika, zmień osobę rysującą
+                                    }
+
+                                }
                                 ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
 
                                 if (gameRoomExists) {
@@ -780,6 +787,8 @@ public class MainActivity extends ActionBarActivity implements
                                 ((RankingFragment) tabFragment.getChatFragmentByTab(4)).Refresh();
                                 break;
                             case UNDEFINED:
+                                break;
+                            default:
                                 break;
                         }
                     } else {
