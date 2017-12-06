@@ -779,7 +779,7 @@ public class MainActivity extends ActionBarActivity implements
                                     final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
                                         final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
-                                        MainActivity.this.runOnUiThread(new Runnable() {
+                                        runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 gFragment.DrawImage(bitmap);
