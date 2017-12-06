@@ -1,5 +1,7 @@
 package it.polimi.deib.p2pchat.discovery.utilities;
 
+import android.content.Context;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -14,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * <p></p>
  * This is a marker annotation and it has no specific attributes.
  */
-public DataContainer {
+public class DataContainer {
     public String playerName;
     public Enums.RequestTypes requestType;
 
