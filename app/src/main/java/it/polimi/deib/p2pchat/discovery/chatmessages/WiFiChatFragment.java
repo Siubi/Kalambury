@@ -163,10 +163,12 @@ public class WiFiChatFragment extends Fragment {
             if (!connectionManager.isDisable()) {
                 Log.d(TAG, "chatmanager state: enable");
 
+                String deviceName = ((MainActivity)getActivity()).deviceName;
                 //send message to the ChatManager's outputStream.
                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                 {
-                    ((MainActivity)getActivity()).users.get(i).write(message.getBytes());
+                    DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.CHAT_MESSAGE);
+                    ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                 }
                 //connectionManager.write(chatLine.getText().toString().getBytes());
             } else {
@@ -226,10 +228,12 @@ public class WiFiChatFragment extends Fragment {
                             if (!connectionManager.isDisable()) {
                                 Log.d(TAG, "chatmanager state: enable");
 
-                                //send message to all users (Client has only Host in 'users' table)
+                                String deviceName = ((MainActivity)getActivity()).deviceName;
+                                //send message to the ChatManager's outputStream.
                                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                 {
-                                    ((MainActivity)getActivity()).users.get(i).write(messageToSend.getBytes());
+                                    DataContainer dC = new DataContainer(deviceName, messageToSend, Enums.RequestTypes.CHAT_MESSAGE);
+                                    ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                                 }
                                 //connectionManager.write(chatLine.getText().toString().getBytes());
                             } else {
