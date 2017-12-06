@@ -69,6 +69,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
 import it.polimi.deib.p2pchat.discovery.services.WiFiServicesAdapter;
@@ -78,6 +79,7 @@ import it.polimi.deib.p2pchat.discovery.socketmanagers.GroupOwnerSocketHandler;
 import it.polimi.deib.p2pchat.discovery.utilities.DataContainer;
 import it.polimi.deib.p2pchat.discovery.utilities.Enums;
 import it.polimi.deib.p2pchat.discovery.utilities.Player;
+import it.polimi.deib.p2pchat.discovery.utilities.RankingPointsManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -126,7 +128,8 @@ public class MainActivity extends ActionBarActivity implements
     public ArrayList<ConnectionManager> users = new ArrayList<>();
     public boolean gameRoomExists = false;
     public ArrayList<Player> playerList = new ArrayList<>();
-
+    public String CurrentPlayerName = "";
+    public RankingPointsManager RankingPointsManager;
 
     public void AddPlayerToList(Player player)
     {
@@ -148,11 +151,6 @@ public class MainActivity extends ActionBarActivity implements
         }
     }
 
-    /**
-     * Method to get the {@link android.os.Handler}.
-     *
-     * @return The handler.
-     */
     Handler getHandler() {
         return handler;
     }
@@ -757,7 +755,11 @@ public class MainActivity extends ActionBarActivity implements
                         } catch (Exception ex) {Log.d(TAG, "dupa"); }
 
                         switch (dC.requestType){
-                            case START_GAME:
+                            case  :
+                                RankingPointsManager = new RankingPointsManager(playerList);
+                                if(isGroupOwner){
+                                    CurrentPlayerName = GetStartingPlayer();
+                                }
                                 CreateGameRoom();
                                 CreateRanking();
                                 break;
@@ -774,6 +776,8 @@ public class MainActivity extends ActionBarActivity implements
                                 }
                                 break;
                             case UPDATE_PLAYERS_POINTS:
+                                RankingFragment.PlayersScore = RankingPointsManager.GetPlayers();
+                                ((RankingFragment) tabFragment.getChatFragmentByTab(4)).Refresh();
                                 break;
                             case UNDEFINED:
                                 break;
@@ -817,6 +821,11 @@ public class MainActivity extends ActionBarActivity implements
         }, 2000);
     }
 
+    private String GetStartingPlayer(){
+        Random random = new Random();
+        int index = random.nextInt(playerList.size());
+        return playerList.get(index).playerName;
+    }
     public void CreateRanking()
     {
         RankingFragment frag = RankingFragment.newInstance();
