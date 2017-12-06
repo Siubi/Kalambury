@@ -686,11 +686,12 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
-                Gson gson = new GsonBuilder()
-                        .setLenient()
-                        .create();
-                DataContainer dC = gson.fromJson(readMessage, DataContainer.class);
-
+                try {
+                    Gson gson = new GsonBuilder()
+                            .setLenient()
+                            .create();
+                    DataContainer dC = gson.fromJson(readMessage, DataContainer.class);
+                } catch (Exception ex) {Log.d(TAG, "dupa"); }
 
                 Log.d(TAG, "Message: " + readMessage);
 
