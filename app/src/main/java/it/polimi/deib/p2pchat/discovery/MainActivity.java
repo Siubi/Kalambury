@@ -764,12 +764,12 @@ public class MainActivity extends ActionBarActivity implements
                             case CHAT_MESSAGE:
                                 if (isGroupOwner)
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
+                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
 
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        gFragment.AddMessageToChat(readMessage);
+                                        gFragment.AddMessageToChat(dC.message);
                                     }
                                 }
                                 break;
