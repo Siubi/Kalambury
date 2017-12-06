@@ -757,21 +757,26 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
-
                         switch (dC.requestType){
                             case START_GAME:
                                 CreateGameRoom();
                                 CreateRanking();
                                 break;
                             case CHAT_MESSAGE:
-                                if (isGroupOwner)
+                                if (isGroupOwner){
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
+                                    String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
+                                    if(((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
+                                        // dodaj ranking dla danego użytkownika, zmień osobę rysującą
+                                    }
+
+                                }
+                                ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(readMessage);
 
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        gFragment.AddMessageToChat(dC.message);
+                                        gFragment.AddMessageToChat(readMessage);
                                     }
                                 }
                                 break;

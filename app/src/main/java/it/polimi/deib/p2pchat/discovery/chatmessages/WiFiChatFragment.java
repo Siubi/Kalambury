@@ -164,7 +164,6 @@ public class WiFiChatFragment extends Fragment {
                 Log.d(TAG, "chatmanager state: enable");
 
                 String deviceName = ((MainActivity)getActivity()).deviceName;
-                //send message to all users (Client has only Host in 'users' table)
                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                 {
                     DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.CHAT_MESSAGE);
@@ -229,7 +228,6 @@ public class WiFiChatFragment extends Fragment {
                                 Log.d(TAG, "chatmanager state: enable");
 
                                 String deviceName = ((MainActivity)getActivity()).deviceName;
-                                //send message to all users (Client has only Host in 'users' table)
                                 for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                 {
                                     DataContainer dC = new DataContainer(deviceName, messageToSend, Enums.RequestTypes.CHAT_MESSAGE);
