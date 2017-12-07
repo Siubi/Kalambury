@@ -793,7 +793,7 @@ public class MainActivity extends ActionBarActivity implements
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        gFragment.AddMessageToChat(readMessage);
+                                        gFragment.AddMessageToChat(dC.message);
                                     }
                                 }
                                 break;
