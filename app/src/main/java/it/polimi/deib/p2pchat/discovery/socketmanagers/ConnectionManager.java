@@ -145,6 +145,7 @@ public class ConnectionManager implements Runnable {
                 oStream.write(buffer2,0, bytesRead);
                 oStream.flush();
             }
+
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
         }
