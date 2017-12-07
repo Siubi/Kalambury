@@ -188,7 +188,7 @@ public class GameFragment extends Fragment {
     {
         drawingPersonName = playerName;
 
-        if (((MainActivity)getActivity()).deviceName.contains(drawingPersonName)) {
+        if (((MainActivity)getActivity()).deviceName.contains(drawingPersonName) || drawingPersonName.contains(((MainActivity)getActivity()).deviceName)) {
             SendImageEvery();
         }
     }
