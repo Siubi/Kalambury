@@ -292,9 +292,10 @@ public class GameFragment extends Fragment {
 
     public void DrawImage(Bitmap bitmap)
     {
+        ink.clear();
         ink.drawBitmap(bitmap, 0, 0, null);
-        ink.refreshDrawableState();
-        ink.forceLayout();
+        //ink.refreshDrawableState();
+        //ink.forceLayout();
     }
 
     private void SendImageEvery()
