@@ -74,6 +74,7 @@ import com.simplify.ink.InkView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
@@ -107,6 +108,7 @@ public class GameFragment extends Fragment {
     TextView textTimer;
     TextView wordLabel;
 
+    public CountDownTimer timer;
     private String word;
 
     public void setWord(String word){
@@ -225,6 +227,12 @@ public class GameFragment extends Fragment {
         }
     }
 
+    public boolean CheckWord(String answer){
+        if(((MainActivity) getActivity()).wordToSolve.toUpperCase().contains(answer.toUpperCase()))
+            return true;
+        return false;
+    }
+
     private void SetupGameChat(View view)
     {
         //To prevent keyboard popup on start
@@ -253,6 +261,21 @@ public class GameFragment extends Fragment {
 
                     if (((MainActivity)getActivity()).isGroupOwner) {
                         AddMessageToChat(message);
+
+                        String winnerName = message.substring(0, message.indexOf(":"));
+                        String answer = message.substring(message.indexOf(":") + 2, message.length());
+                        //Check for answer
+                        if (CheckWord(answer))
+                        {
+                            String systemMessage = "SYSTEM - Gracz '" + winnerName + "' odgadł hasło '" + answer + "'";
+                            deviceName = ((MainActivity)getActivity()).deviceName;
+                            for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                            {
+                                DataContainer dC = new DataContainer(deviceName, systemMessage, Enums.RequestTypes.CHAT_MESSAGE);
+                                ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+                            }
+                            AddMessageToChat(systemMessage);
+                        }
                     }
 
                     enterChatMessege.setText("");
@@ -319,15 +342,18 @@ public class GameFragment extends Fragment {
     public void AddMessageToChat(String message)
     {
         chat.append("\n" + message);
+        if (message.contains("SYSTEM -")) {
+            timer.cancel();
+        }
     }
 
     public String checkDigit(int number) {
         return number <= 9 ? "0" + number : String.valueOf(number);
     }
 
-    public void StartTimer()
+    public CountDownTimer StartTimer()
     {
-        new CountDownTimer(roundTime * 1000, 1000) {
+        return new CountDownTimer(roundTime * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 textTimer.setText("0:"+checkDigit(roundTime));
@@ -368,7 +394,7 @@ public class GameFragment extends Fragment {
 
         SetupGameChat(view);
 
-        StartTimer();
+        timer = StartTimer();
 
         return view;
     }

@@ -34,6 +34,7 @@ import java.util.Random;
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
 import it.polimi.deib.p2pchat.discovery.MainActivity;
+import it.polimi.deib.p2pchat.discovery.TabFragment;
 import it.polimi.deib.p2pchat.discovery.WordGenerator;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
@@ -160,6 +161,12 @@ public class WiFiChatFragment extends Fragment {
         }
     }
 
+    public boolean CheckWord(String answer){
+        if(((MainActivity) getActivity()).wordToSolve.toUpperCase().contains(answer.toUpperCase()))
+            return true;
+        return false;
+    }
+
     public void reSendCustomMessage(String message)
     {
         if (connectionManager != null) {
@@ -173,6 +180,22 @@ public class WiFiChatFragment extends Fragment {
                     ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                 }
                 //connectionManager.write(chatLine.getText().toString().getBytes());
+
+                String winnerName = message.substring(0, message.indexOf(":"));
+                String answer = message.substring(message.indexOf(":") + 2, message.length());;
+                //Check for answer
+                if (CheckWord(answer))
+                {
+                    String systemMessage = "SYSTEM - Gracz '" + winnerName + "' odgadł hasło '" + answer + "'";
+                    deviceName = ((MainActivity)getActivity()).deviceName;
+                    for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                    {
+                        DataContainer dC = new DataContainer(deviceName, systemMessage, Enums.RequestTypes.CHAT_MESSAGE);
+                        ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+                    }
+                    Fragment f = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(2);
+                    ((GameFragment)f).AddMessageToChat(systemMessage);
+                }
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);
 

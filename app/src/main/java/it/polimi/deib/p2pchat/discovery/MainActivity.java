@@ -135,12 +135,6 @@ public class MainActivity extends ActionBarActivity implements
 
     public ArrayList<Player> playerList = new ArrayList<>();
 
-    public boolean CheckWord(String answer){
-        if(this.wordToSolve.toUpperCase().equals(answer.toUpperCase()))
-            return true;
-        return false;
-    }
-
     /*public void AddPlayerToList(Player player)
     {
         for (int i = 0; i < playerList.size(); i++)
