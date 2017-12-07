@@ -241,6 +241,8 @@ public class GameFragment extends Fragment {
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(enterChatMessege.getWindowToken(), 0);
 
+                    SendImage();
+
                     String message = ((MainActivity)getActivity()).deviceName + ": " + enterChatMessege.getText().toString();
                     String deviceName = ((MainActivity)getActivity()).deviceName;
                     //send message to all users (Client has only Host in 'users' table)
@@ -349,7 +351,7 @@ public class GameFragment extends Fragment {
         ink.setMaxStrokeWidth(6f);
 
         if (((MainActivity)getActivity()).isGroupOwner)
-            SendImageEvery();
+            //SendImageEvery();
 
         SetupGameChat(view);
 

@@ -783,6 +783,7 @@ public class MainActivity extends ActionBarActivity implements
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                //Toast.makeText(this, "oooooooooo", Toast.LENGTH_SHORT).show();
                                                 gFragment.DrawImage(bitmap);
                                             }
                                         });
