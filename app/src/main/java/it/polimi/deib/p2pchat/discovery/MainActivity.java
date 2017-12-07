@@ -683,7 +683,7 @@ public class MainActivity extends ActionBarActivity implements
                 Log.d(TAG, "handleMessage, " + Configuration.MESSAGE_READ_MSG + " case");
 
                 // construct a string from the valid bytes in the buffer
-                String readMessage = new String(readBuf, 0, msg.arg1);
+                String readMessage = new String(readBuf, Charset.forName("UTF-8"));
 
                 //Log.d(TAG, "Message: " + readMessage);
                 Log.d(TAG, "Message: " + readMessage);
