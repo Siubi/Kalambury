@@ -324,42 +324,6 @@ public class GameFragment extends Fragment {
         return number <= 9 ? "0" + number : String.valueOf(number);
     }
 
-    private void SendImage()
-    {
-        String message = BitmapToStringConverter.Convert(ink.getBitmap());
-        String deviceName = ((MainActivity)getActivity()).deviceName;
-        for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
-        {
-            DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
-            ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
-        }
-    }
-
-    public void DrawImage(Bitmap bitmap)
-    {
-        ink.drawBitmap(bitmap, 0, 0, null);
-        ink.refreshDrawableState();
-        ink.forceLayout();
-    }
-
-    private void SendImageEvery()
-    {
-        Thread thread = new Thread() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
-                        SendImage();
-                        Thread.sleep(5000);
-                    } catch (Exception v) {
-                        System.out.println(v);
-                    }
-                }
-            }
-        };
-        thread.start();
-    }
-
     public void StartTimer()
     {
         new CountDownTimer(roundTime * 1000, 1000) {

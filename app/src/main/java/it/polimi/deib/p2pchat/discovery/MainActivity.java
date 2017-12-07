@@ -792,21 +792,12 @@ public class MainActivity extends ActionBarActivity implements
                             case REFRESH_IMAGE:
                                 final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                 if (gFragment != null) {
-                                    final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
+                                    final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message, gFragment.getInkWidth(), gFragment.getInkHeight());
                                     gFragment.DrawImage(bitmap);
                                 }
                                 break;
                             case UNDEFINED:
                                 break;
-                            case REFRESH_IMAGE:
-                                if (gameRoomExists) {
-                                    final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
-                                    if (gFragment != null) {
-                                        final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message, gFragment.getInkWidth(), gFragment.getInkHeight());
-                                        gFragment.DrawImage(bitmap);
-                                    }
-                                }
-
                             default:
                                 break;
                         }
