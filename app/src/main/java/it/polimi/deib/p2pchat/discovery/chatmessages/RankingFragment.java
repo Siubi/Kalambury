@@ -25,7 +25,7 @@ public class RankingFragment extends Fragment {
     @Setter
     private Integer tabNumber;
     @Getter @Setter
-    public static List<Player> PlayersScore;
+    public static List<Player> playerList;
     private static final String TAG = "RankingFragment";
     private static TextView _rankingTextView;
 
@@ -37,15 +37,15 @@ public class RankingFragment extends Fragment {
 
     }
 
-    public static void Refresh(){
+    public void Refresh(){
         _rankingTextView.setText(getFormattedPlayersScore());
     }
 
     private static String getFormattedPlayersScore(){
         String formattedResult = "";
-        //for (String score : PlayersScore ) {
-        //        formattedResult += score + "\n";
-        //}
+        for (Player player : playerList ) {
+            formattedResult += player.playerName+"\t"+player.points + "\n";
+        }
         return formattedResult;
     }
 

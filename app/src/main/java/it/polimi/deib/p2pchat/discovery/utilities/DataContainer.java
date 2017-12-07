@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -25,6 +26,7 @@ public class DataContainer {
     public byte[] image;
     public ArrayList<Player> playerList;
     public Enums.RequestTypes requestType;
+    public InetAddress inetAddress;
 
     /**
      * Constructor.
@@ -37,6 +39,13 @@ public class DataContainer {
 
     }
 
+    // WHO IS DRAWING
+    public DataContainer(Enums.RequestTypes requestType, String message, String playerName){
+        this.requestType = requestType;
+        this.message = message;
+        this.playerName = playerName;
+    }
+
     /**
      * Constructor 2.
      *
@@ -44,6 +53,7 @@ public class DataContainer {
      * @param message (required) TMessage
      * @param requestType (required) Type of container.
      */
+
     public DataContainer(String playerName, String message, Enums.RequestTypes requestType)
     {
         this.requestType = requestType;

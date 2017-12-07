@@ -26,12 +26,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import it.polimi.deib.p2pchat.R;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
 import it.polimi.deib.p2pchat.discovery.MainActivity;
+import it.polimi.deib.p2pchat.discovery.WordGenerator;
 import it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager;
 import it.polimi.deib.p2pchat.discovery.services.ServiceList;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
@@ -195,15 +198,29 @@ public class WiFiChatFragment extends Fragment {
                         @Override
                         public void onClick(View arg0) {
                             if (connectionManager != null) {
-                                //send message to all users
-                                for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
-                                {
-                                    DataContainer dC = new DataContainer(Enums.RequestTypes.START_GAME);
-                                    ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
-                                }
+                                // host
                                 ((MainActivity)getActivity()).CreateGameRoom();
-                                ((MainActivity)getActivity()).CreateRanking();
+                                ((MainActivity)getActivity()).CreateRanking(((MainActivity)getActivity()).playerList);
+                                String hostDeviceName = ((MainActivity)getActivity()).deviceName;
+                                GameFragment hostGameFragment = (GameFragment) ((MainActivity) getActivity()).tabFragment.getChatFragmentByTab(2);
+
+                                ((MainActivity) getActivity()).wordToSolve = ((MainActivity)getActivity()).wordGenerator.GetWord();
+                                Random random = new Random();
+                                String playerName = ((MainActivity)getActivity()).playerList.get(random.nextInt(((MainActivity)getActivity()).playerList.size())).playerName;
+                                Log.d("PLAYER: ",playerName);
+                                if(playerName.equals(hostDeviceName)){
+                                    hostGameFragment.setWord(((MainActivity) getActivity()).wordToSolve);
+                                    for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                                        ((MainActivity)getActivity()).users.get(i).write(new DataContainer(Enums.RequestTypes.START_GAME).toByteArray());
+                                } else {
+                                    for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                                    {
+                                        ((MainActivity)getActivity()).users.get(i).write(new DataContainer(Enums.RequestTypes.START_GAME).toByteArray());
+                                        ((MainActivity)getActivity()).users.get(i).write((new DataContainer(Enums.RequestTypes.CHOOSE_PLAYER,((MainActivity) getActivity()).wordToSolve,playerName)).toByteArray());
+                                    }
+                                }
                             }
+
                         }
                     });
         }

@@ -21,6 +21,7 @@ package it.polimi.deib.p2pchat.discovery;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -43,12 +44,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import it.polimi.deib.p2pchat.R;
+import it.polimi.deib.p2pchat.discovery.BitmapConverters.StringToBitmapConverter;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsSdTxtRecordListener;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomDnsServiceResponseListener;
 import it.polimi.deib.p2pchat.discovery.actionlisteners.CustomizableActionListener;
@@ -68,6 +71,7 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
@@ -104,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements
     private boolean discoveryStatus = true;
 
     @Getter
-    private TabFragment tabFragment;
+    public TabFragment tabFragment;
     @Getter
     @Setter
     private Toolbar toolbar;
@@ -125,10 +129,19 @@ public class MainActivity extends ActionBarActivity implements
     public boolean isGroupOwner = false;
     public ArrayList<ConnectionManager> users = new ArrayList<>();
     public boolean gameRoomExists = false;
+
+    public WordGenerator wordGenerator = new WordGenerator();
+    public String wordToSolve;
+
     public ArrayList<Player> playerList = new ArrayList<>();
 
+    public boolean CheckWord(String answer){
+        if(this.wordToSolve.toUpperCase().equals(answer.toUpperCase()))
+            return true;
+        return false;
+    }
 
-    public void AddPlayerToList(Player player)
+    /*public void AddPlayerToList(Player player)
     {
         for (int i = 0; i < playerList.size(); i++)
         {
@@ -146,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements
             if (playerList.get(i).playerName.contains(playerName))
                 playerList.get(i).points += points;
         }
-    }
+    }*/
 
     /**
      * Method to get the {@link android.os.Handler}.
@@ -759,20 +772,20 @@ public class MainActivity extends ActionBarActivity implements
                         switch (dC.requestType){
                             case START_GAME:
                                 CreateGameRoom();
-                                CreateRanking();
+                                CreateRanking(playerList);
                                 break;
                             case CHAT_MESSAGE:
                                 if (isGroupOwner){
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-
-                                    String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
-                                    if(gameRoomExists && ((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
-                                        // dodaj ranking dla danego użytkownika, zmień osobę rysującą
+                                    String[] temp = dC.message.split(" ");
+                                    String answer = temp[1];
+                                    Log.d("Podana odpowiedź: ",answer);
+                                    if(CheckWord(answer)){
+                                        dC.message = "POPRAWNA ODPOWIEDŹ "+temp[0];
+                                        ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
                                     }
-
                                 }
                                 ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
-
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
@@ -780,7 +793,20 @@ public class MainActivity extends ActionBarActivity implements
                                     }
                                 }
                                 break;
+                            case CHOOSE_PLAYER:
+                                if(dC.playerName.equals(deviceName)){
+                                    GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
+                                    gFragment.setWord(dC.message);
+                                }
+                                break;
                             case UPDATE_PLAYERS_POINTS:
+                                break;
+                            case REFRESH_IMAGE:
+                                final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
+                                if (gFragment != null) {
+                                    final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
+                                    gFragment.DrawImage(bitmap);
+                                }
                                 break;
                             case UNDEFINED:
                                 break;
@@ -826,7 +852,7 @@ public class MainActivity extends ActionBarActivity implements
         }, 2000);
     }
 
-    public void CreateRanking()
+    public void CreateRanking(List<Player> playerList)
     {
         RankingFragment frag = RankingFragment.newInstance();
         frag.setTabNumber(3);
@@ -838,6 +864,9 @@ public class MainActivity extends ActionBarActivity implements
         //update current displayed tab and the color.
         this.setTabFragmentToPage(2);
         this.addColorActiveTabs(false);
+
+        frag.playerList = playerList;
+        frag.Refresh();
     }
 
     public void CreateGameRoom()

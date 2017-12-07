@@ -5,6 +5,7 @@ package it.polimi.deib.p2pchat.discovery.chatmessages;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.deib.p2pchat.R;
+import it.polimi.deib.p2pchat.discovery.BitmapConverters.BitmapToStringConverter;
 import it.polimi.deib.p2pchat.discovery.DestinationDeviceTabList;
 import it.polimi.deib.p2pchat.discovery.MainActivity;
 import it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue;
@@ -99,19 +101,13 @@ public class GameFragment extends Fragment {
     public TextView chat;
     int roundTime=45;
     TextView textTimer;
+    TextView wordLabel;
 
     private String word;
 
     public void setWord(String word){
         this.word = word.toUpperCase();
-    }
-
-    public boolean CheckWord(String answer){
-        if(word==null)
-            return false;
-        if(this.word.equals(answer.toUpperCase()))
-            return true;
-        return false;
+        wordLabel.setText("Hasło: "+word);
     }
 
     /**
@@ -279,6 +275,42 @@ public class GameFragment extends Fragment {
         return number <= 9 ? "0" + number : String.valueOf(number);
     }
 
+    private void SendImage()
+    {
+        String message = BitmapToStringConverter.Convert(ink.getBitmap());
+        String deviceName = ((MainActivity)getActivity()).deviceName;
+        for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+        {
+            DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
+            ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+        }
+    }
+
+    public void DrawImage(Bitmap bitmap)
+    {
+        ink.drawBitmap(bitmap, 0, 0, null);
+        ink.refreshDrawableState();
+        ink.forceLayout();
+    }
+
+    private void SendImageEvery()
+    {
+        Thread thread = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                        SendImage();
+                        Thread.sleep(5000);
+                    } catch (Exception v) {
+                        System.out.println(v);
+                    }
+                }
+            }
+        };
+        thread.start();
+    }
+
     public void StartTimer()
     {
         new CountDownTimer(roundTime * 1000, 1000) {
@@ -301,18 +333,24 @@ public class GameFragment extends Fragment {
 
         textTimer = (TextView)view.findViewById(R.id.roundTime);
 
+        wordLabel = (TextView) view.findViewById(R.id.word);
+
+        /*
         TextView labelWord = (TextView) view.findViewById(R.id.word);
-        if (!((MainActivity)getActivity()).isGroupOwner) {
+        if (((MainActivity)getActivity()).isGroupOwner) {
             labelWord.setVisibility(View.GONE);
         }
         else {
-            labelWord.setText("Hasło: "+word);
-        }
+
+        }*/
 
         ink = (InkView)view.findViewById(R.id.ink);
         ink.setColor(getResources().getColor(android.R.color.black));
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
+
+        if (((MainActivity)getActivity()).isGroupOwner)
+            SendImageEvery();
 
         SetupGameChat(view);
 

@@ -24,6 +24,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import it.polimi.deib.p2pchat.discovery.Configuration;
@@ -69,7 +70,7 @@ public class ConnectionManager implements Runnable {
         try {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[20000];
             int bytes;
 
             //this method's call is used to call handleMessage's case Configuration.FIRSTMESSAGEXCHANGE in the MainActivity.
