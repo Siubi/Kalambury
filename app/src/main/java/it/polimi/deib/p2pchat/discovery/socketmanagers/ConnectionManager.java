@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 import it.polimi.deib.p2pchat.discovery.Configuration;
 import lombok.Getter;
@@ -59,6 +60,13 @@ public class ConnectionManager implements Runnable {
         this.handler = handler;
     }
 
+    private byte[] copy_data(byte[] to_buff, byte[] from_buff, Integer curr_index){
+        for(int j = curr_index, i = 0; i < from_buff.length; ++i, ++curr_index){
+            to_buff[j] = from_buff[i];
+        }
+        return to_buff;
+    }
+
     /**
      * Method to execute the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ConnectionManager}'s Thread
      * To stop the execution, please use ".setDisable(true);".
@@ -70,7 +78,9 @@ public class ConnectionManager implements Runnable {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
 
+            Integer buffer_current_index = 0;
             byte[] buffer = new byte[100000];
+            byte[] buff = new byte[4096];
             int bytes;
 
             //this method's call is used to call handleMessage's case Configuration.FIRSTMESSAGEXCHANGE in the MainActivity.
@@ -80,10 +90,17 @@ public class ConnectionManager implements Runnable {
                 try {
                     // Read from the InputStream
                     if(iStream!=null) {
-                        bytes = iStream.read(buffer);
-                        if (bytes == -1) {
-                            break;
+
+                        while(true)
+                        {
+                            bytes = iStream.read(buff);
+                            if (bytes == -1) {
+                                break;
+                            }
+                            buffer = copy_data(buffer, buff, buffer_current_index);
+                            Log.e(TAG, "buffer_current_index" + buffer_current_index);
                         }
+
                         //this method's call is used to call handleMessage's case Configuration.MESSAGE_READ in the MainActivity.
                         handler.obtainMessage(Configuration.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                     }

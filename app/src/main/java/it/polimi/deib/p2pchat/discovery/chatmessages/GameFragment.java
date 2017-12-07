@@ -291,9 +291,9 @@ public class GameFragment extends Fragment {
             public void run() {
                 while (((MainActivity)getActivity()).isGroupOwner) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(5000);
                         SendImage();
-                        Thread.sleep(200);
+                        Thread.sleep(10000);
                     } catch (Exception v) {
                         System.out.println(v);
                     }
