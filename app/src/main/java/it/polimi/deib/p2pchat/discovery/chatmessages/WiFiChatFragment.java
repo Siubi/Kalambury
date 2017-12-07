@@ -174,14 +174,8 @@ public class WiFiChatFragment extends Fragment {
         if (connectionManager != null) {
             if (!connectionManager.isDisable()) {
                 Log.d(TAG, "chatmanager state: enable");
-
-                String deviceName = ((MainActivity)getActivity()).deviceName;
-                for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
-                {
-                    DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.CHAT_MESSAGE);
-                    ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
-                }
                 //connectionManager.write(chatLine.getText().toString().getBytes());
+                String deviceName = ((MainActivity)getActivity()).deviceName;
 
                 String winnerName = message.substring(0, message.indexOf(":"));
                 String answer = message.substring(message.indexOf(":") + 2, message.length());;
@@ -210,6 +204,12 @@ public class WiFiChatFragment extends Fragment {
                     Fragment r = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(3);
                     ((RankingFragment)r).playerList = ((MainActivity)getActivity()).playerList;
                     ((RankingFragment)r).Refresh();
+                } else {
+                    for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                    {
+                        DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.CHAT_MESSAGE);
+                        ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+                    }
                 }
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);
