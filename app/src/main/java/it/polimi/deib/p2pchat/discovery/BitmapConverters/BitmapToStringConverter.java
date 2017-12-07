@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 
 /**
  * Created by Cybul on 29.11.2017.
@@ -16,7 +17,7 @@ public class BitmapToStringConverter  {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmapStr.compress(Bitmap.CompressFormat.PNG, 10, baos);
         byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
+        return new String(b, Charset.forName("UTF-8"));
 
     }
 }
