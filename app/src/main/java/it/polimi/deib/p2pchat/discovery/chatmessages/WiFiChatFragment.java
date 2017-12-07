@@ -197,6 +197,19 @@ public class WiFiChatFragment extends Fragment {
                     }
                     Fragment f = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(2);
                     ((GameFragment)f).AddMessageToChat(systemMessage);
+
+                    //Points update
+                    ((MainActivity)getActivity()).AddPointsForPlayer(winnerName, 10);
+                    ((MainActivity)getActivity()).AddPointsForPlayer(((GameFragment) f).drawingPersonName, 5);
+                    for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                    {
+                        DataContainer dC = new DataContainer(((MainActivity)getActivity()).playerList, Enums.RequestTypes.UPDATE_PLAYERS_POINTS);
+                        ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+                    }
+
+                    Fragment r = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(3);
+                    ((RankingFragment)r).playerList = ((MainActivity)getActivity()).playerList;
+                    ((RankingFragment)r).Refresh();
                 }
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);

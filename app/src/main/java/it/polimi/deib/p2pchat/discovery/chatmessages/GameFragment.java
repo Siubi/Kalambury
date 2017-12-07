@@ -287,6 +287,19 @@ public class GameFragment extends Fragment {
                                 ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
                             }
                             AddMessageToChat(systemMessage);
+
+                            //Points update
+                            ((MainActivity)getActivity()).AddPointsForPlayer(winnerName, 10);
+                            ((MainActivity)getActivity()).AddPointsForPlayer(drawingPersonName, 5);
+                            for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+                            {
+                                DataContainer dC = new DataContainer(((MainActivity)getActivity()).playerList, Enums.RequestTypes.UPDATE_PLAYERS_POINTS);
+                                ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+                            }
+
+                            Fragment r = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(3);
+                            ((RankingFragment)r).playerList = ((MainActivity)getActivity()).playerList;
+                            ((RankingFragment)r).Refresh();
                         }
                     }
 

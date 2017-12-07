@@ -144,7 +144,7 @@ public class MainActivity extends ActionBarActivity implements
         }
 
         playerList.add(player);
-    }
+    }*/
 
     public void AddPointsForPlayer(String playerName, int points)
     {
@@ -153,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements
             if (playerList.get(i).playerName.contains(playerName))
                 playerList.get(i).points += points;
         }
-    }*/
+    }
 
     /**
      * Method to get the {@link android.os.Handler}.
@@ -783,6 +783,12 @@ public class MainActivity extends ActionBarActivity implements
                                 }
                                 break;
                             case UPDATE_PLAYERS_POINTS:
+                                playerList = dC.playerList;
+                                final RankingFragment rankingFragment = ((RankingFragment) tabFragment.getChatFragmentByTab(3));
+                                if (rankingFragment != null) {
+                                    rankingFragment.playerList = playerList;
+                                    rankingFragment.Refresh();
+                                }
                                 break;
                             case REFRESH_IMAGE:
                                 final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
