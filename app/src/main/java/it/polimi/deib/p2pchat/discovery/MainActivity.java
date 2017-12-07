@@ -669,11 +669,6 @@ public class MainActivity extends ActionBarActivity implements
         this.setTabFragmentToPage(tabNum);
     }
 
-    /**
-     * Method called automatically by Android when
-     * {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}
-     * calls handler.obtainMessage(***).sendToTarget().
-     */
     @Override
     public boolean handleMessage(Message msg) {
         Log.d(TAG, "handleMessage, tabNum in this activity is: " + tabNum);
@@ -767,7 +762,7 @@ public class MainActivity extends ActionBarActivity implements
                                     .setLenient()
                                     .create();
                             dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
+                        } catch (Exception ex) {Log.d(TAG, "corrupted JSON"); }
 
                         switch (dC.requestType){
                             case START_GAME:
@@ -775,17 +770,10 @@ public class MainActivity extends ActionBarActivity implements
                                 CreateRanking(playerList);
                                 break;
                             case CHAT_MESSAGE:
-                                if (isGroupOwner){
+                                if (isGroupOwner)
                                     ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
-                                    String[] temp = dC.message.split(" ");
-                                    String answer = temp[1];
-                                    Log.d("Podana odpowiedź: ",answer);
-                                    if(CheckWord(answer)){
-                                        dC.message = "POPRAWNA ODPOWIEDŹ "+temp[0];
-                                        ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
-                                    }
-                                }
                                 ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
+
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
@@ -810,6 +798,15 @@ public class MainActivity extends ActionBarActivity implements
                                 break;
                             case UNDEFINED:
                                 break;
+                            case REFRESH_IMAGE:
+                                if (gameRoomExists) {
+                                    final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
+                                    if (gFragment != null) {
+                                        final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message, gFragment.getInkWidth(), gFragment.getInkHeight());
+                                        gFragment.DrawImage(bitmap);
+                                    }
+                                }
+
                             default:
                                 break;
                         }

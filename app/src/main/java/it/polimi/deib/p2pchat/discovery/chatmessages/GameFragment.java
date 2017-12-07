@@ -14,6 +14,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -65,7 +66,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.simplify.ink.InkView;
 
 import java.util.ArrayList;
@@ -132,12 +136,6 @@ public class GameFragment extends Fragment {
     public GameFragment() {}
 
 
-    /**
-     * Method that combines all the messages inside the
-     * {@link it.polimi.deib.p2pchat.discovery.chatmessages.waitingtosend.WaitingToSendQueue}
-     * in one String and pass this one to the {@link it.polimi.deib.p2pchat.discovery.socketmanagers.ChatManager}
-     * to send the message to other devices.
-     */
     public void sendForcedWaitingToSendQueue() {
 
         Log.d(TAG, "sendForcedWaitingToSendQueue() called");
@@ -242,6 +240,8 @@ public class GameFragment extends Fragment {
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(enterChatMessege.getWindowToken(), 0);
 
+                    //SendImage();
+
                     String message = ((MainActivity)getActivity()).deviceName + ": " + enterChatMessege.getText().toString();
                     String deviceName = ((MainActivity)getActivity()).deviceName;
                     //send message to all users (Client has only Host in 'users' table)
@@ -264,7 +264,56 @@ public class GameFragment extends Fragment {
             }
         });
         chat = (TextView) view.findViewById(R.id.chat);
-        chat.setMovementMethod(new ScrollingMovementMethod());}
+        chat.setMovementMethod(new ScrollingMovementMethod());
+    }
+
+    private void SendImage()
+    {
+        String message = BitmapToStringConverter.Convert(ink.getBitmap());
+        String deviceName = ((MainActivity)getActivity()).deviceName;
+        for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
+        {
+            DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
+            byte[] test = dC.toByteArray();
+            ((MainActivity)getActivity()).users.get(i).write(test);
+
+        }
+    }
+
+    public int getInkWidth()
+    {
+        return ink.getWidth();
+    }
+
+    public int getInkHeight()
+    {
+        return ink.getHeight();
+    }
+
+    public void DrawImage(Bitmap bitmap)
+    {
+        ink.drawBitmap(bitmap, 0, 0, null);
+        ink.refreshDrawableState();
+        ink.forceLayout();
+    }
+
+    private void SendImageEvery()
+    {
+        Thread thread = new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                        SendImage();
+                        Thread.sleep(5000);
+                    } catch (Exception v) {
+                        System.out.println(v);
+                    }
+                }
+            }
+        };
+        thread.start();
+    }
 
     public void AddMessageToChat(String message)
     {

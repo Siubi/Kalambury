@@ -2,25 +2,13 @@ package it.polimi.deib.p2pchat.discovery.BitmapConverters;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.util.Base64;
-
-import java.io.ByteArrayOutputStream;
 
 /**
- * Created by Cybul on 29.11.2017.
+ * Created by tfrankowski on 07.12.17.
  */
 
-public class BitmapToStringConverter  {
-
-    public static String Convert(Bitmap bitmapStr) {
-        Bitmap small = Scaler.getResizedBitmap(bitmapStr, 150, 150);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        small.compress(Bitmap.CompressFormat.PNG, 10, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-
-    }
-    private static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+public class Scaler {
+    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
