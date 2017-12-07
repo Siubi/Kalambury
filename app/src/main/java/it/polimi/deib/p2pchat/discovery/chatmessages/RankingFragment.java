@@ -37,7 +37,7 @@ public class RankingFragment extends Fragment {
 
     }
 
-    public static void Refresh(){
+    public void Refresh(){
         _rankingTextView.setText(getFormattedPlayersScore());
     }
 

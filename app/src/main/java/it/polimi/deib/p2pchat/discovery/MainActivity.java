@@ -69,6 +69,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import it.polimi.deib.p2pchat.discovery.services.WiFiP2pService;
 import it.polimi.deib.p2pchat.discovery.services.WiFiServicesAdapter;
@@ -78,6 +79,7 @@ import it.polimi.deib.p2pchat.discovery.socketmanagers.GroupOwnerSocketHandler;
 import it.polimi.deib.p2pchat.discovery.utilities.DataContainer;
 import it.polimi.deib.p2pchat.discovery.utilities.Enums;
 import it.polimi.deib.p2pchat.discovery.utilities.Player;
+import it.polimi.deib.p2pchat.discovery.utilities.RankingPointsManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -126,7 +128,8 @@ public class MainActivity extends ActionBarActivity implements
     public ArrayList<ConnectionManager> users = new ArrayList<>();
     public boolean gameRoomExists = false;
     public ArrayList<Player> playerList = new ArrayList<>();
-
+    public String CurrentPlayerName = "";
+    public RankingPointsManager RankingPointsManager;
 
     public void AddPlayerToList(Player player)
     {
@@ -148,11 +151,6 @@ public class MainActivity extends ActionBarActivity implements
         }
     }
 
-    /**
-     * Method to get the {@link android.os.Handler}.
-     *
-     * @return The handler.
-     */
     Handler getHandler() {
         return handler;
     }
@@ -686,7 +684,17 @@ public class MainActivity extends ActionBarActivity implements
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
 
+                DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
+                try {
+                    Gson gson = new GsonBuilder()
+                            .setLenient()
+                            .create();
+                    dC = gson.fromJson(readMessage, DataContainer.class);
+                } catch (Exception ex) {Log.d(TAG, "dupa"); }
+
                 Log.d(TAG, "Message: " + readMessage);
+
+                readMessage = dC.message;
 
                 //message filter usage
                 try {
@@ -747,17 +755,14 @@ public class MainActivity extends ActionBarActivity implements
                             readMessage = readMessage.replace("+", "");
                             readMessage = readMessage.replace(Configuration.MAGICADDRESSKEYWORD, "Mac Address");
                         }
-
-                        DataContainer dC = new DataContainer(Enums.RequestTypes.UNDEFINED);
-                        try {
-                            Gson gson = new GsonBuilder()
-                                    .setLenient()
-                                    .create();
-                            dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
-
                         switch (dC.requestType){
-                            case START_GAME:
+                            case  START_GAME:
+
+                                if(isGroupOwner){
+                                    RankingPointsManager = new RankingPointsManager(playerList);
+                                    CurrentPlayerName = GetStartingPlayer();
+                                }
+
                                 CreateGameRoom();
                                 CreateRanking();
                                 break;
@@ -768,6 +773,18 @@ public class MainActivity extends ActionBarActivity implements
                                     String answer = readMessage.substring(readMessage.indexOf(":"),readMessage.length());
                                     if(gameRoomExists && ((GameFragment)tabFragment.getChatFragmentByTab(2)).CheckWord(answer)){
                                         // dodaj ranking dla danego użytkownika, zmień osobę rysującą
+                                        RankingPointsManager.AddPointsToPlayer(CurrentPlayerName);
+                                        RankingPointsManager.AddPointsToPlayer(dC.playerName);
+                                        if (!connectionManager.isDisable()) {
+                                            Log.d(TAG, "chatmanager state: enable");
+
+                                            for (int i = 0; i < users.size(); i++)
+                                            {
+                                                DataContainer ndc = new DataContainer(RankingPointsManager.GetPlayers(), Enums.RequestTypes.UPDATE_PLAYERS_POINTS);
+                                                users.get(i).write(ndc.toByteArray());
+                                            }
+                                            //connectionManager.write(chatLine.getText().toString().getBytes());
+                                        }
                                     }
 
                                 }
@@ -776,11 +793,13 @@ public class MainActivity extends ActionBarActivity implements
                                 if (gameRoomExists) {
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        gFragment.AddMessageToChat(dC.message);
+                                        gFragment.AddMessageToChat(readMessage);
                                     }
                                 }
                                 break;
                             case UPDATE_PLAYERS_POINTS:
+                                RankingFragment.PlayersScore = dC.playerList;
+                                ((RankingFragment) tabFragment.getChatFragmentByTab(3)).Refresh();
                                 break;
                             case UNDEFINED:
                                 break;
@@ -826,6 +845,11 @@ public class MainActivity extends ActionBarActivity implements
         }, 2000);
     }
 
+    private String GetStartingPlayer(){
+        Random random = new Random();
+        int index = random.nextInt(playerList.size());
+        return playerList.get(index).playerName;
+    }
     public void CreateRanking()
     {
         RankingFragment frag = RankingFragment.newInstance();
