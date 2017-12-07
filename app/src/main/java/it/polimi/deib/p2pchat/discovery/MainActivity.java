@@ -771,7 +771,7 @@ public class MainActivity extends ActionBarActivity implements
                                 break;
                             case CHAT_MESSAGE:
                                 if (isGroupOwner)
-                                    ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(readMessage);
+                                    ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).reSendCustomMessage(dC.message);
                                 ((WiFiChatFragment)tabFragment.getChatFragmentByTab(tabNum)).pushMessage(dC.message);
 
                                 if (gameRoomExists) {
