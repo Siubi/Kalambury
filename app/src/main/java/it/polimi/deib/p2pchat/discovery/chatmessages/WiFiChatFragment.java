@@ -257,6 +257,11 @@ public class WiFiChatFragment extends Fragment {
                                     for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                     {
                                         ((MainActivity)getActivity()).users.get(i).write(new DataContainer(Enums.RequestTypes.START_GAME).toByteArray());
+                                        try {
+                                            Thread.sleep(500);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
                                         ((MainActivity)getActivity()).users.get(i).write((new DataContainer(Enums.RequestTypes.CHOOSE_PLAYER,((MainActivity) getActivity()).wordToSolve,playerName)).toByteArray());
                                     }
                                 }
