@@ -776,7 +776,7 @@ public class MainActivity extends ActionBarActivity implements
                                 }
                                 break;
                             case CHOOSE_PLAYER:
-                                if(dC.playerName.equals(deviceName)){
+                                if(dC.playerName.contains(deviceName)){
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     gFragment.setWord(dC.message);
                                     gFragment.setDrawingPlayer(dC.playerName);
