@@ -751,7 +751,7 @@ public class MainActivity extends ActionBarActivity implements
                                     .setLenient()
                                     .create();
                             dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
+                        } catch (Exception ex) {Log.d(TAG, "corrupted JSON"); }
 
                         switch (dC.requestType){
                             case START_GAME:
@@ -778,7 +778,7 @@ public class MainActivity extends ActionBarActivity implements
                                 if (gameRoomExists) {
                                     final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
-                                        final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
+                                        final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message, gFragment.getInkWidth(), gFragment.getInkHeight());
                                         gFragment.DrawImage(bitmap);
                                     }
                                 }

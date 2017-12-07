@@ -68,6 +68,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.simplify.ink.InkView;
 
 import java.util.ArrayList;
@@ -242,7 +244,7 @@ public class GameFragment extends Fragment {
                     InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(enterChatMessege.getWindowToken(), 0);
 
-                    SendImage();
+                    //SendImage();
 
                     String message = ((MainActivity)getActivity()).deviceName + ": " + enterChatMessege.getText().toString();
                     String deviceName = ((MainActivity)getActivity()).deviceName;
@@ -276,8 +278,20 @@ public class GameFragment extends Fragment {
         for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
         {
             DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
-            ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
+            byte[] test = dC.toByteArray();
+            ((MainActivity)getActivity()).users.get(i).write(test);
+
         }
+    }
+
+    public int getInkWidth()
+    {
+        return ink.getWidth();
+    }
+
+    public int getInkHeight()
+    {
+        return ink.getHeight();
     }
 
     public void DrawImage(Bitmap bitmap)
