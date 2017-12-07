@@ -274,8 +274,6 @@ public class GameFragment extends Fragment {
         {
             DataContainer dC = new DataContainer(deviceName, message, Enums.RequestTypes.REFRESH_IMAGE);
             ((MainActivity)getActivity()).users.get(i).write(dC.toByteArray());
-            Log.d(TAG, "bitmap: " + message);
-            Log.d(TAG, "bitmap size: " + message.length());
         }
     }
 

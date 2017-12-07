@@ -13,7 +13,7 @@ public class StringToBitmapConverter {
     public static Bitmap Convert(String strBitmap)
     {
         try {
-            byte[] encodeByte = strBitmap.getBytes();
+            byte[] encodeByte = Base64.decode(strBitmap, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
                     encodeByte.length);
             return bitmap;
