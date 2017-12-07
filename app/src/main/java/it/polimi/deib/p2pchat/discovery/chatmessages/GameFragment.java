@@ -238,7 +238,7 @@ public class GameFragment extends Fragment {
     }
 
     public boolean CheckWord(String answer){
-        if (answer == null)
+        if (answer == null || ((MainActivity) getActivity()).wordToSolve == null)
             return false;
         if(((MainActivity) getActivity()).wordToSolve.toUpperCase().contains(answer.toUpperCase()))
             return true;
