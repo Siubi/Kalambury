@@ -69,6 +69,7 @@ import it.polimi.deib.p2pchat.discovery.services.WiFiP2pServicesFragment;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -682,8 +683,9 @@ public class MainActivity extends ActionBarActivity implements
                 Log.d(TAG, "handleMessage, " + Configuration.MESSAGE_READ_MSG + " case");
 
                 // construct a string from the valid bytes in the buffer
-                String readMessage = new String(readBuf, 0, msg.arg1);
+                String readMessage = new String(readBuf, Charset.forName("UTF-8"));
 
+                //Log.d(TAG, "Message: " + readMessage);
                 Log.d(TAG, "Message: " + readMessage);
 
                 //message filter usage
@@ -752,7 +754,7 @@ public class MainActivity extends ActionBarActivity implements
                                     .setLenient()
                                     .create();
                             dC = gson.fromJson(readMessage, DataContainer.class);
-                        } catch (Exception ex) {Log.d(TAG, "dupa"); }
+                        } catch (Exception ex) {Log.d(TAG, "dupa" + ex.getMessage()); }
 
                         switch (dC.requestType){
                             case START_GAME:
@@ -779,15 +781,10 @@ public class MainActivity extends ActionBarActivity implements
                                 if (gameRoomExists) {
                                     final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
+                                        gFragment.AddMessageToChat("HALO");
+                                        Log.d(TAG, "REFRESH_IMAGE dupa2");
                                         final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
-
-                                        //this.runOnUiThread(new Runnable() {
-                                        //    @Override
-                                        //    public void run() {
                                         gFragment.DrawImage(bitmap);
-                                        //    }
-                                        //});
-
                                     }
                                 }
 
