@@ -348,23 +348,9 @@ public class GameFragment extends Fragment {
         ink.setColor(getResources().getColor(android.R.color.black));
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
-        ink.setOnTouchListener(new InkView.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    float x = event.getX();
-                    float y = event.getY();
-                    String s = "" + y + " " + x;
-                    AddMessageToChat(s);
-                    // Do what you want
-                    return true;
-                }
-                return false;
-            }
-        });
 
         if (((MainActivity)getActivity()).isGroupOwner)
-            //SendImageEvery();
+            SendImageEvery();
 
         SetupGameChat(view);
 
