@@ -780,12 +780,14 @@ public class MainActivity extends ActionBarActivity implements
                                     final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
                                         final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
-                                        gFragment.DrawImage(bitmap);
 
-                                        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                        ft.detach(gFragment);
-                                        ft.attach(gFragment);
-                                        ft.commit();
+                                        //this.runOnUiThread(new Runnable() {
+                                        //    @Override
+                                        //    public void run() {
+                                        gFragment.DrawImage(bitmap);
+                                        //    }
+                                        //});
+
                                     }
                                 }
 

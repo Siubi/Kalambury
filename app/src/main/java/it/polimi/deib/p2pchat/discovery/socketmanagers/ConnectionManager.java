@@ -69,7 +69,7 @@ public class ConnectionManager implements Runnable {
         try {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
-            byte[] buffer = new byte[200000];
+            byte[] buffer = new byte[100000];
             int bytes;
 
             //this method's call is used to call handleMessage's case Configuration.FIRSTMESSAGEXCHANGE in the MainActivity.
