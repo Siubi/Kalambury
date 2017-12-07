@@ -21,6 +21,10 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -70,7 +74,7 @@ public class ConnectionManager implements Runnable {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
 
-            byte[] buffer = new byte[100000];
+            byte[] buffer = new byte[1024];
             int bytes;
 
             //this method's call is used to call handleMessage's case Configuration.FIRSTMESSAGEXCHANGE in the MainActivity.
@@ -80,12 +84,27 @@ public class ConnectionManager implements Runnable {
                 try {
                     // Read from the InputStream
                     if(iStream!=null) {
-                        bytes = iStream.read(buffer);
-                        if (bytes == -1) {
-                            break;
+                        int bytesRead;
+                        int totalBytes = 0;
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        BufferedOutputStream bos = new BufferedOutputStream(baos);
+
+                        while(true)
+                        {
+                            bytesRead = iStream.read(buffer, 0, buffer.length);
+                            if(bytesRead == -1)
+                            {
+                                break;
+                            }
+                            totalBytes += bytesRead;
+                            bos.write(buffer, 0, bytesRead);
+                            bos.flush();
+
                         }
+
+                        byte[] buffer2 = baos.toByteArray();
                         //this method's call is used to call handleMessage's case Configuration.MESSAGE_READ in the MainActivity.
-                        handler.obtainMessage(Configuration.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                        handler.obtainMessage(Configuration.MESSAGE_READ, totalBytes, -1, buffer2).sendToTarget();
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -109,6 +128,24 @@ public class ConnectionManager implements Runnable {
      */
     public void write(byte[] buffer) {
         try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+            BufferedInputStream bis = new BufferedInputStream(bais);
+            byte[] buffer2 = new byte[1024];
+            while(true)
+            {
+
+                int bytesRead = bis.read(buffer2, 0, buffer2.length);
+
+                if(bytesRead == -1)
+                {
+                    break;
+                }
+
+                //BytesToSend = BytesToSend - bytesRead;
+                oStream.write(buffer2,0, bytesRead);
+                oStream.flush();
+            }
+
             oStream.write(buffer);
         } catch (IOException e) {
             Log.e(TAG, "Exception during write", e);
