@@ -69,6 +69,7 @@ public class ConnectionManager implements Runnable {
         try {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
+
             byte[] buffer = new byte[100000];
             int bytes;
 
