@@ -97,6 +97,7 @@ public class GameFragment extends Fragment {
     @Getter @Setter private boolean grayScale = true;
     @Getter private final List<String> items = new ArrayList<>();
     private InkView ink;
+    public String drawingPersonName = "";
 
     private TextView chatLine;
 
@@ -180,6 +181,15 @@ public class GameFragment extends Fragment {
     public void updateChatMessageListAdapter() {
         if(adapter!=null) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void setDrawingPlayer(String playerName)
+    {
+        drawingPersonName = playerName;
+
+        if (((MainActivity)getActivity()).deviceName.contains(drawingPersonName)) {
+            SendImageEvery();
         }
     }
 
@@ -389,8 +399,8 @@ public class GameFragment extends Fragment {
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
 
-        if (((MainActivity)getActivity()).isGroupOwner)
-            SendImageEvery();
+        //if (((MainActivity)getActivity()).isGroupOwner)
+        //    SendImageEvery();
 
         SetupGameChat(view);
 

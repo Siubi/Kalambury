@@ -236,6 +236,8 @@ public class WiFiChatFragment extends Fragment {
                                     hostGameFragment.setWord(((MainActivity) getActivity()).wordToSolve);
                                     for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                         ((MainActivity)getActivity()).users.get(i).write(new DataContainer(Enums.RequestTypes.START_GAME).toByteArray());
+                                        Fragment f = ((MainActivity)getActivity()).tabFragment.getChatFragmentByTab(2);
+                                        ((GameFragment)f).setDrawingPlayer(hostDeviceName);
                                 } else {
                                     for (int i = 0; i < ((MainActivity)getActivity()).users.size(); i++)
                                     {
