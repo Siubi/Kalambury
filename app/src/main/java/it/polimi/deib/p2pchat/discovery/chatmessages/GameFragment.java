@@ -367,7 +367,7 @@ public class GameFragment extends Fragment {
     public void AddMessageToChat(String message)
     {
         chat.append("\n" + message);
-        if (message.contains("SYSTEM -")) {
+        if (message.contains("SYSTEM -") || message.contains(word)) {
             timer.cancel();
         }
     }
