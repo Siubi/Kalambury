@@ -14,6 +14,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -281,11 +282,9 @@ public class GameFragment extends Fragment {
 
     public void DrawImage(Bitmap bitmap)
     {
-        Toast.makeText(((MainActivity)getActivity()), "aa", Toast.LENGTH_SHORT).show();
-        ink.clear();
         ink.drawBitmap(bitmap, 0, 0, null);
         ink.refreshDrawableState();
-        Toast.makeText(((MainActivity)getActivity()), "ssss", Toast.LENGTH_SHORT).show();
+        ink.forceLayout();
     }
 
     private void SendImageEvery()
@@ -349,6 +348,20 @@ public class GameFragment extends Fragment {
         ink.setColor(getResources().getColor(android.R.color.black));
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
+        ink.setOnTouchListener(new InkView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    float x = event.getX();
+                    float y = event.getY();
+                    String s = "" + y + " " + x;
+                    AddMessageToChat(s);
+                    // Do what you want
+                    return true;
+                }
+                return false;
+            }
+        });
 
         if (((MainActivity)getActivity()).isGroupOwner)
             //SendImageEvery();

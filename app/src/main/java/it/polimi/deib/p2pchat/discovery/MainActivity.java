@@ -775,18 +775,11 @@ public class MainActivity extends ActionBarActivity implements
                             case UNDEFINED:
                                 break;
                             case REFRESH_IMAGE:
-                                Toast.makeText(this, "o", Toast.LENGTH_SHORT).show();
                                 if (gameRoomExists) {
                                     final GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     if (gFragment != null) {
                                         final Bitmap bitmap = StringToBitmapConverter.Convert(dC.message);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                //Toast.makeText(this, "oooooooooo", Toast.LENGTH_SHORT).show();
-                                                gFragment.DrawImage(bitmap);
-                                            }
-                                        });
+                                        gFragment.DrawImage(bitmap);
                                     }
                                 }
 
