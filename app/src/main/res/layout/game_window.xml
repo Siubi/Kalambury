@@ -28,8 +28,8 @@
 
         <com.simplify.ink.InkView
             android:id="@+id/ink"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="150px"
+            android:layout_height="150px"
             android:layout_below="@+id/word"
             />
 
