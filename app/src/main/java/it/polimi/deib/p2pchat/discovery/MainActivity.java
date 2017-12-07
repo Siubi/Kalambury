@@ -779,6 +779,7 @@ public class MainActivity extends ActionBarActivity implements
                                 if(dC.playerName.equals(deviceName)){
                                     GameFragment gFragment = ((GameFragment) tabFragment.getChatFragmentByTab(2));
                                     gFragment.setWord(dC.message);
+                                    gFragment.setDrawingPlayer(dC.playerName);
                                 }
                                 break;
                             case UPDATE_PLAYERS_POINTS:

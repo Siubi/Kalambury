@@ -97,6 +97,7 @@ public class GameFragment extends Fragment {
     @Getter @Setter private boolean grayScale = true;
     @Getter private final List<String> items = new ArrayList<>();
     private InkView ink;
+    public String drawingPersonName = "";
 
     private TextView chatLine;
 
@@ -183,6 +184,15 @@ public class GameFragment extends Fragment {
         }
     }
 
+    public void setDrawingPlayer(String playerName)
+    {
+        drawingPersonName = playerName;
+
+        if (((MainActivity)getActivity()).deviceName.contains(drawingPersonName)) {
+            SendImageEvery();
+        }
+    }
+
     /**
      * Method that add the text in the chatLine EditText to the WaitingToSendQueue and try to reconnect
      * to the service associated to the device of this tab, with index tabNumber.
@@ -228,6 +238,8 @@ public class GameFragment extends Fragment {
     }
 
     public boolean CheckWord(String answer){
+        if (answer == null)
+            return false;
         if(((MainActivity) getActivity()).wordToSolve.toUpperCase().contains(answer.toUpperCase()))
             return true;
         return false;
@@ -389,8 +401,8 @@ public class GameFragment extends Fragment {
         ink.setMinStrokeWidth(1.5f);
         ink.setMaxStrokeWidth(6f);
 
-        if (((MainActivity)getActivity()).isGroupOwner)
-            SendImageEvery();
+        //if (((MainActivity)getActivity()).isGroupOwner)
+        //    SendImageEvery();
 
         SetupGameChat(view);
 
