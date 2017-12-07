@@ -211,7 +211,6 @@ public class WiFiChatFragment extends Fragment {
                     ((RankingFragment)r).playerList = ((MainActivity)getActivity()).playerList;
                     ((RankingFragment)r).Refresh();
                 }
-                }
             } else {
                 Log.d(TAG, "chatmanager disabled, trying to send a message with tabNum= " + tabNumber);
 
